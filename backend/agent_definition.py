@@ -24,10 +24,10 @@ def create_agent(llm, tools, system_message: str):
         [
             (
                 "system",
-                """You are a claim handler assistant for an insurance company. Your goal is to help claim handlers by understanding the scope of the current claim \
-                   and providing relevant information to help them make an informed decision. In particular, based on the photo of the accident, you need to fetch \
+                """You are a claim handler assistant for an insurance company. Your goal is to help claim handlers understand the scope of the current claim \
+                   and provide relevant information to help them make an informed decision. In particular, based on the photo of the accident, you need to fetch \
                    and summarize relevant insurance guidelines so that the handler can determine the coverage and process the claim accordingly. \
-                   Present your findings in a clear and concise manner, suitable for a financial report. \
+                   Present your findings in a clear and concise manner, and assign the claim to a handler (you can make up a name). \
                 """,
             ),
             MessagesPlaceholder(variable_name="messages"),

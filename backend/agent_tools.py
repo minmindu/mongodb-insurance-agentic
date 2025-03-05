@@ -15,27 +15,24 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-INDEX_NAME = "XXX" # Replace XXX with the name of the index
+INDEX_NAME = "description_index" 
 
 embedding_model = get_embedding_model(model_id="cohere.embed-english-v3")
 
 vector_store = create_vector_store(
         cluster_uri=os.getenv("MONGODB_URI"),
         database_name=os.getenv("DATABASE_NAME"),
-        collection_name=os.getenv("XXX"),                       # Replace XXX with the name of the collection
-        text_key="article_string",
+        collection_name=os.getenv("policy"),                       
+        text_key="description",
         index_name=INDEX_NAME,
         embedding_model=embedding_model
     )
 
 @tool
 def fetch_guidelines(query: str, n=10) -> str:
-    "Gathers the top n policy chunks from the database that are most relevant to the query."
+    """Runs semantic search on existing policies."""
     result = vector_store.similarity_search_with_score(query=query, k=n)
     return str(result)
-
-@tool
-def 
 
 
 
