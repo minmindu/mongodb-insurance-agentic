@@ -73,7 +73,7 @@ def stream_image_to_bedrock(image_path, model_id='anthropic.claude-3-sonnet-2024
 
 # Example usage with streaming
 def main():
-    image_path = 'backend/bus_image.jpeg'
+    image_path = 'backend/test_photos/adverse_weather.jpeg'
     
     print("Streaming response:")
     full_response = ""

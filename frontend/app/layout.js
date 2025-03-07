@@ -1,7 +1,7 @@
 import { GeistSans } from "geist/font/sans";
 
 export const metadata = {
-  title: "Home",
+  title: "Leafy Insurance",
   description: "",
 };
 

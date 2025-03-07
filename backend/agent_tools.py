@@ -15,14 +15,14 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-INDEX_NAME = "description_index" 
+INDEX_NAME = "description_vector_index" 
 
 embedding_model = get_embedding_model(model_id="cohere.embed-english-v3")
 
 vector_store = create_vector_store(
         cluster_uri=os.getenv("MONGODB_URI"),
         database_name=os.getenv("DATABASE_NAME"),
-        collection_name=os.getenv("policy"),                       
+        collection_name=os.getenv("COLLECTION_NAME"),                       
         text_key="description",
         index_name=INDEX_NAME,
         embedding_model=embedding_model

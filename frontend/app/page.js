@@ -1,11 +1,11 @@
-import LeafygreenExample from "@/components/leafygreenExample/LeafygreenExample";
-import Test from "@/components/test/Test";
+import Navbar from "@/components/navBar/Navbar";
+import ImageDescriptor from "@/components/imageDescriptor/ImageDescriptor";
 
 export default function Home() {
   return (
     <>
-      <Test name={"World!"}></Test>
-      <LeafygreenExample></LeafygreenExample>
+      <Navbar></Navbar>
+      <ImageDescriptor></ImageDescriptor>
     </>
   );
 }

@@ -20,4 +20,9 @@ router = APIRouter()
 
 @app.get("/")
 async def read_root(request: Request):
-    return {"message":"Server is running"}
+    return {"message": "Server is running"}
+
+
+@app.post("/imageDescriptor")
+async def load_yfinance_market_data(request: Request):
+    return {"message": "Image Descriptor endpoint"}

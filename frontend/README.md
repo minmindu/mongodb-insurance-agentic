@@ -1,83 +1,36 @@
-# Next.js Frontend
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started 
+## Getting Started
 
-1. Install dependencies by running:
+First, run the development server:
+
 ```bash
-npm install
-```
-2. Start the frontend development server with:
-````bash
 npm run dev
-````
-3. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface to interact with the image vector search demo.
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Understanding Next.js
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-### Routes
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-In Next.js, routes are created inside the `app` directory. Here's a breakdown of how the routing works:
+## Learn More
 
-#### API Routes
+To learn more about Next.js, take a look at the following resources:
 
-- The `api` folder is used for creating API routes.
-- We have two example routes for demonstrating how API routes work:
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-  - **GET request to MongoDB**:  
-    [http://localhost:3000/api/mongodb](http://localhost:3000/api/mongodb)
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-  - **Basic test route**:  
-    [http://localhost:3000/api/test](http://localhost:3000/api/test)
+## Deploy on Vercel
 
-#### Dynamic Routes
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-- If you create a new folder inside the `app` directory, a route will be automatically created based on the folder name.
-- For example, creating a folder called `example` will make it accessible at:
-  [http://localhost:3000/example](http://localhost:3000/example)
-
-Each route includes a `layout.js` and `page.js` to define the structure and content.
-
-#### Root Route
-
-- The global root route (home page) is accessible at:
-  [http://localhost:3000](http://localhost:3000)
-
-This page is managed by the `layout.js` and `page.js` inside the `app` directory.
-
-
-### Components
-
-Components are located outside the `app` folder, inside the `components` directory.
-
-There are two example components:
-
-1. **MongoDB Leafy Green System Design**: Demonstrates how to integrate MongoDB with your component.
-2. **Test Component**: Shows how to create a simple test component that includes both a `.jsx` file and a `.module.css` file for styling.
-
-#### CSS
-
-Each component should have its own dedicated CSS file. For styling, we recommend using CSS Modules (e.g., `component.module.css`) to scope styles locally to the component.
-
-#### Images
-
-For adding images, we use `Image` from `next/image`, which is provided by Next.js. This component optimizes images for caching and better performance.
-
-- Images should be stored in the `public` folder inside the `frontend` directory.
-- Next.js automatically handles these images, making them easily accessible.
-
-For an example, check out the `test.jsx` component.
-
-### MongoDB Connections
-
-This template includes a `lib` folder with a utility for connecting to MongoDB. 
-
-Inside the `lib` folder, you’ll find a function called `connectToDatabase`. To use it, simply import the function and pass the necessary parameters to specify which database and collection you want to connect to.
-
-The `connectToDatabase` function manages the connection and can be reused across your application for efficient MongoDB interactions.
-
-### .env.local
-
-Next.js natively supports `.env.local` files, so you don't need to install additional libraries like `dotenv`. Simply create a `.env.local` file, and Next.js will automatically detect and load it.
-
-Make sure to place the `.env.local` file inside the `frontend` folder for proper configuration.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
