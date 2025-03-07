@@ -22,6 +22,7 @@ def create_vector_store(
     database_name: str,
     collection_name: str,
     text_key: str,
+    embedding_key: str,
     embedding_model: BedrockEmbeddings,
     index_name: str = None,
 ) -> MongoDBAtlasVectorSearch:
@@ -43,6 +44,7 @@ def create_vector_store(
         connection_string=cluster_uri,
         namespace=database_name + "." + collection_name,
         embedding=embedding_model,
+        embedding_key=embedding_key,
         index_name=index_name,
         text_key=text_key,
     )
@@ -68,6 +70,7 @@ if __name__ == "__main__":
         database_name=os.getenv("DATABASE_NAME"),
         collection_name=os.getenv("COLLECTION_NAME"),
         text_key="description",
+        embedding_key="descriptionEmbedding",
         index_name=INDEX_NAME,
         embedding_model=embedding_model
     )

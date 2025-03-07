@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import styles from "./imageDescriptor.module.css";
-import axios from "axios";
 
-const imageDescriptor = () => {
+const ImageDescriptor = () => {
   const [droppedImage, setDroppedImage] = useState(null);
-  const [showLossAmount, setShowLossAmount] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [similarDocs, setSimilarDocs] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,55 +15,78 @@ const imageDescriptor = () => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
+      setDroppedImage(file);
+      
+      // Generate image preview
       const reader = new FileReader();
-      reader.onload = (event) => setDroppedImage(event.target.result);
+      reader.onload = (event) => setImagePreview(event.target.result);
       reader.readAsDataURL(file);
     }
   };
 
   const handleUpload = async () => {
+    if (!droppedImage) {
+      alert("Please drop an image first.");
+      return;
+    }
+
     const apiUrl = process.env.NEXT_PUBLIC_IMAGE_DESCRIPTOR_API_URL;
-    setShowLossAmount(true);
     setLoading(true);
 
+    const formData = new FormData();
+    formData.append("file", droppedImage);
+
     try {
-      const response = await axios.post(
-        apiUrl,
-        { droppedImage },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      setSimilarDocs(response.data.similar_documents);
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.body) {
+        throw new Error("ReadableStream not yet supported in this browser.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+
+        const chunk = decoder.decode(value, { stream: true });
+        console.log("Received chunk:", chunk);
+
+        setSimilarDocs((prev) => [...prev, chunk]);
+      }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error while streaming response:", error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatDate = () => {
-    const currentDate = new Date();
-    return currentDate.toISOString().split("T")[0];
   };
 
   return (
     <div className={styles.content}>
       <div className={styles.imageDescriptorSection}>
         <h2>Image Search</h2>
+
         <div
           className={styles.dragBox}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          {droppedImage ? (
+          {imagePreview ? (
             <img
               className={styles.droppedImage}
-              src={droppedImage}
+              src={imagePreview}
               alt="Dropped"
             />
           ) : (
-            <p className={styles.dragText}>Drag &amp; Drop your image here</p>
+            <p className={styles.dragText}>Drag & Drop your image here</p>
           )}
         </div>
+
         <button
           className={styles.uploadBtn}
           onClick={handleUpload}
@@ -72,65 +94,20 @@ const imageDescriptor = () => {
         >
           {loading ? <div className={styles.spinner}></div> : "Upload Photo"}
         </button>
-
-        <br></br>
-
-        {showLossAmount && (
-          <div className={styles.uploadedImgInfo}>
-            <InfoItem title="CustomerID" content="C1234" />
-            <InfoItem title="Claim Date" content={formatDate()} />
-            <InfoItem
-              title="Claim Status"
-              content="Active"
-              customStyle={styles.statusTag}
-            />
-            <InfoItem
-              title="Loss Amount"
-              content="TBD"
-              customStyle={styles.lossTbd}
-            />
-          </div>
-        )}
       </div>
 
       <div className={styles.similarImageSection}>
-        <h2>Similar Claims</h2>
-        {similarDocs.map((doc, index) => (
-          <ReferenceCard key={index} doc={doc} />
-        ))}
+        <h2>Live Response</h2>
+        <div className={styles.similarDocsContainer}>
+          {similarDocs.map((doc, index) => (
+            <p key={index} className={styles.similarDoc}>
+              {doc}
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-const InfoItem = ({ title, content, customStyle }) => (
-  <div className={styles.info}>
-    <p className={styles.fieldTitle}>{title}:</p>
-    <p className={`${styles.fieldContent} ${customStyle}`}>{content}</p>
-  </div>
-);
-
-const ReferenceCard = ({ doc }) => (
-  <div className={styles.referenceCards}>
-    <div className={styles.imgSection}>
-      <img src={`/car-damages/${doc.photo}`} alt="Reference" />
-    </div>
-    <div className={styles.contentSection}>
-      <div className={styles.topRow}>
-        <InfoItem title="Customer ID" content={doc.customerID} />
-        <InfoItem title="Claim Date" content={doc.claimClosedDate} />
-        <InfoItem
-          title="Loss Amount"
-          content={`$${doc.totalLossAmount}`}
-          customStyle={styles.lossAmount}
-        />
-      </div>
-      <div className={styles.lowerSection}>
-        <p className={styles.fieldTitle}>Damage Description:</p>
-        <p className={styles.fieldContent}>{doc.damageDescription}</p>
-      </div>
-    </div>
-  </div>
-);
-
-export default imageDescriptor;
+export default ImageDescriptor;

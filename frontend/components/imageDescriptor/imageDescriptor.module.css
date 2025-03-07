@@ -122,7 +122,6 @@
   background-color: white;
   align-items: center;
   text-align: left;
-
 }
 
 .imgSection img {
@@ -178,4 +177,20 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.similarDocsContainer {
+  display: block;  /* Switched to block for a fluid paragraph-like display */
+  margin-top: 10px;
+  text-align: left;  /* Align text left if needed */
+}
+
+/* Remove the box styling by removing similarDoc class rules */
+.similarDoc {
+  display: inline;  /* Ensure text flows inline like a normal text paragraph */
+  margin-right: 2px; /* Optional: Add slight space between words */
+  background-color: transparent; /* Remove background */
+  padding: 0; /* Remove padding */
+  border-radius: 0; /* Remove border radius */
+  font-size: 16px; /* Increase font-size for better readability */
 }
