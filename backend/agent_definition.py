@@ -24,14 +24,14 @@ def create_agent(llm, tools, system_message: str):
         [
             (
                 "system",
-                "You are a helpful AI assistant, collaborating with other assistants."
-                " Use the provided tools to progress towards answering the question."
-                " If you are unable to fully answer, that's OK, another assistant with different tools "
-                " will help where you left off. Execute what you can to make progress."
-                " If you or any of the other assistants have the final answer or deliverable,"
-                " prefix your response with FINAL ANSWER so the team knows to stop."
-                " You have access to the following tools: {tool_names}.\n{system_message}"
-                "\nCurrent time: {time}.",
+                "You are a claim handler assistant for an insurance company. Your goal is to help claim handlers understand the scope of the current claim"
+                "and provide relevant information to help them make an informed decision. In particular, based on the description of the accident, you need to fetch"
+                "and summarize relevant insurance guidelines so that the handler can determine the coverage and process the claim accordingly."
+                "Present your findings in a clear and extremely concise manner, and assign the claim to a handler (you can make up a name)."
+                "Do not add any unnecessary information."
+                "You have access to the following tools: {tool_names}, that helps you find relevant insurance guidelines based on the description of the accident."
+                "Use it. Specify whether you have used a tool and what was the result."
+                "{system_message}",
             ),
             MessagesPlaceholder(variable_name="messages"),
         ]
@@ -47,5 +47,5 @@ def create_agent(llm, tools, system_message: str):
 chatbot_agent = create_agent(
     llm,
     tools,
-    system_message="You are helpful HR Chabot Agent.",
+    system_message="Edit this message.",
 )

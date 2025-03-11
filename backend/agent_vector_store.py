@@ -22,6 +22,7 @@ def create_vector_store(
     database_name: str,
     collection_name: str,
     text_key: str,
+    embedding_key: str,
     embedding_model: BedrockEmbeddings,
     index_name: str = None,
 ) -> MongoDBAtlasVectorSearch:
@@ -36,9 +37,6 @@ def create_vector_store(
     :param embedding_model: The embedding model to use.
     """
 
-    if index_name is None:
-        index_name = f"{collection_name}_VS_IDX"
-
     logging.info(f"Creating vector store...")
 
     # Vector Store Creation
@@ -46,6 +44,7 @@ def create_vector_store(
         connection_string=cluster_uri,
         namespace=database_name + "." + collection_name,
         embedding=embedding_model,
+        embedding_key=embedding_key,
         index_name=index_name,
         text_key=text_key,
     )
@@ -53,9 +52,10 @@ def create_vector_store(
     return vector_store
 
 
-def lookup_collection(vector_store: MongoDBAtlasVectorSearch, query: str, n=10) -> str:
+def lookup_collection(vector_store: MongoDBAtlasVectorSearch, query: str, n=2) -> str:
     result = vector_store.similarity_search_with_score(query=query, k=n)
-    return str(result)
+    return str(result[0][0].page_content)
+    #return str(result)
 
 
 # Example usage
@@ -63,18 +63,24 @@ if __name__ == "__main__":
 
     embedding_model = get_embedding_model(model_id="cohere.embed-english-v3")
 
-    INDEX_NAME = "financial_news_VS_IDX"
+    INDEX_NAME = "description_index"
+    
 
     vector_store = create_vector_store(
         cluster_uri=os.getenv("MONGODB_URI"),
         database_name=os.getenv("DATABASE_NAME"),
-        collection_name=os.getenv("NEWS_COLLECTION"),
-        text_key="article_string",
+        collection_name=os.getenv("COLLECTION_NAME"),
+        text_key="description",
+        embedding_key="descriptionEmbedding",
         index_name=INDEX_NAME,
         embedding_model=embedding_model
     )
 
-    query = "S&P 500"
+    
+    query = "school bus accident with passenger vehicle"
 
     result = lookup_collection(vector_store, query=query, n=5)
+
+
     print(result)
+    
