@@ -15,7 +15,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-INDEX_NAME = "description_vector_index" 
+INDEX_NAME = "description_index" 
 
 embedding_model = get_embedding_model(model_id="cohere.embed-english-v3")
 
@@ -30,12 +30,19 @@ vector_store = create_vector_store(
     )
 
 @tool
-def fetch_guidelines(query: str, n=2) -> str:
+def fetch_guidelines(query: str, n=1) -> str:
     """Runs semantic search on existing policies to find relevant ones based on the image description."""
     result = vector_store.similarity_search_with_score(query=query, k=n)
-    #return str(result[0][0].page_content)
-    return str(result)
+    return str(result[0][0].page_content)
+    #return str(result)
 
 
 
 tools = [fetch_guidelines]
+
+if __name__ == "__main__":
+    # Example usage
+    print("Calling fetch_guidelines...")
+
+    query = "school bus accident with passenger vehicle"
+    print(fetch_guidelines(query))

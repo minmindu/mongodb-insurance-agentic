@@ -26,18 +26,7 @@ def create_vector_store(
     embedding_model: BedrockEmbeddings,
     index_name: str = None,
 ) -> MongoDBAtlasVectorSearch:
-    """
-    Creates a vector store using MongoDB Atlas.
-
-    :param cluster_uri: MongoDB connection URI.
-    :param database_name: Name of the database.
-    :param collection_name: Name of the collection.
-    :param text_key: The field containing text data.
-    :param index_name: Name of the index.
-    :param embedding_model: The embedding model to use.
-    """
-
-    logging.info(f"Creating vector store...")
+   
 
     # Vector Store Creation
     vector_store = MongoDBAtlasVectorSearch.from_connection_string(
@@ -52,35 +41,8 @@ def create_vector_store(
     return vector_store
 
 
-def lookup_collection(vector_store: MongoDBAtlasVectorSearch, query: str, n=2) -> str:
+def lookup_collection(vector_store: MongoDBAtlasVectorSearch, query: str, n=1) -> str:
     result = vector_store.similarity_search_with_score(query=query, k=n)
-    return str(result[0][0].page_content)
-    #return str(result)
-
-
-# Example usage
-if __name__ == "__main__":
-
-    embedding_model = get_embedding_model(model_id="cohere.embed-english-v3")
-
-    INDEX_NAME = "description_index"
-    
-
-    vector_store = create_vector_store(
-        cluster_uri=os.getenv("MONGODB_URI"),
-        database_name=os.getenv("DATABASE_NAME"),
-        collection_name=os.getenv("COLLECTION_NAME"),
-        text_key="description",
-        embedding_key="descriptionEmbedding",
-        index_name=INDEX_NAME,
-        embedding_model=embedding_model
-    )
-
-    
-    query = "school bus accident with passenger vehicle"
-
-    result = lookup_collection(vector_store, query=query, n=5)
-
-
-    print(result)
+    #return str(result[0][0].page_content)
+    return str(result)
     
