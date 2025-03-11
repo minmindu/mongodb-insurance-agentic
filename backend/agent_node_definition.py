@@ -22,5 +22,5 @@ def agent_node(state, agent, name):
     }
 
 
-chatbot_node = functools.partial(agent_node, agent=chatbot_agent, name="Financial Sentiment Analysis Chatbot")
+chatbot_node = functools.partial(agent_node, agent=chatbot_agent, name="Claim adjuster helper")
 tool_node = ToolNode(tools, name="tools")

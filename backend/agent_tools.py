@@ -24,17 +24,17 @@ vector_store = create_vector_store(
         database_name=os.getenv("DATABASE_NAME"),
         collection_name=os.getenv("COLLECTION_NAME"),                       
         text_key="description",
+        embedding_key="descriptionEmbedding",
         index_name=INDEX_NAME,
         embedding_model=embedding_model
     )
 
 @tool
-def fetch_guidelines(query: str, n=10) -> str:
-    """Runs semantic search on existing policies."""
+def fetch_guidelines(query: str, n=2) -> str:
+    """Runs semantic search on existing policies to find relevant ones based on the image description."""
     result = vector_store.similarity_search_with_score(query=query, k=n)
+    #return str(result[0][0].page_content)
     return str(result)
-
-
 
 
 

@@ -54,7 +54,8 @@ def create_vector_store(
 
 def lookup_collection(vector_store: MongoDBAtlasVectorSearch, query: str, n=2) -> str:
     result = vector_store.similarity_search_with_score(query=query, k=n)
-    return str(result)
+    return str(result[0][0].page_content)
+    #return str(result)
 
 
 # Example usage
@@ -76,7 +77,10 @@ if __name__ == "__main__":
     )
 
     
-    query = "pile up collision"
+    query = "school bus accident with passenger vehicle"
 
-    result = lookup_collection(vector_store, query=query, n=2)
+    result = lookup_collection(vector_store, query=query, n=5)
+
+
     print(result)
+    

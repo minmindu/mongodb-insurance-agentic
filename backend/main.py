@@ -34,9 +34,7 @@ async def analyze_image(
     model_id: Optional[str] = 'anthropic.claude-3-sonnet-20240229-v1:0',
     prompt: Optional[str] = "What do you see in this image? Give a concise description and focus and what happened to vehicles."
 ):
-    """
-    Endpoint to upload an image and stream analysis from Claude via AWS Bedrock
-    """
+
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="File must be an image")
     

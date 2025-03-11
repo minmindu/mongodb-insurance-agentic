@@ -68,7 +68,9 @@ if __name__ == '__main__':
         {
             "messages": [
                 HumanMessage(
-                    content="Analyze the sentiment of financial news articles related to the S&P 500 index. Provide a concise summary along with a sentiment score ranging from 0 (highly negative) to 100 (highly positive)."
+                    content="this is what the image of the accident looks like: This image appears to depict an accident involving a school bus and a passenger"
+                    "vehicle on a residential street. The school bus, which is yellow and marked with the number 16, seems to have collided with the front of a "
+                    "white sedan. The sedan has extensive front-end damage, suggesting a forceful impact occurred."
                 )
             ]
         },
