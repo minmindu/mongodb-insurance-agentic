@@ -8,10 +8,15 @@ import os
 from tempfile import NamedTemporaryFile
 from typing import Optional
 from pic2textApi import stream_image_to_bedrock
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
 app = FastAPI()
+
+image_description = None  # Global variable to store the most recent description
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,6 +39,7 @@ async def analyze_image(
     model_id: Optional[str] = 'anthropic.claude-3-sonnet-20240229-v1:0',
     prompt: Optional[str] = "What do you see in this image? Give a concise description and focus and what happened to vehicles."
 ):
+    global image_description  # Use the global variable
 
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="File must be an image")
@@ -45,10 +51,19 @@ async def analyze_image(
         temp_file.write(content)
     
     try:
-        # Create a custom generator that handles the cleanup
+        # Reset the current description
+        image_description = ""
+        
+        # Create a custom generator that handles the cleanup and stores the description
         def generate_with_cleanup():
+            global image_description
             try:
-                yield from stream_image_to_bedrock(temp_file_path, model_id)
+                for chunk in stream_image_to_bedrock(temp_file_path, model_id):
+                    image_description += chunk  # Add to the global variable
+                    yield chunk
+                
+        
+                logger.info(f"Description preview: {image_description}...")
             finally:
                 # Clean up the temporary file
                 if os.path.exists(temp_file_path):
@@ -59,6 +74,7 @@ async def analyze_image(
             generate_with_cleanup(),
             media_type="text/plain"
         )
+    
     except Exception as e:
         # Make sure to clean up if an exception occurs
         if os.path.exists(temp_file_path):
