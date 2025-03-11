@@ -1,13 +1,13 @@
 from fastapi import FastAPI, Request, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import APIRouter
 from dotenv import load_dotenv
 import os
 from tempfile import NamedTemporaryFile
 from typing import Optional
 from pic2textApi import stream_image_to_bedrock
+from insurance_agent import insurance_agent
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,16 +54,20 @@ async def analyze_image(
         # Reset the current description
         image_description = ""
         
-        # Create a custom generator that handles the cleanup and stores the description
-        def generate_with_cleanup():
+        # Process the image and collect the full description before responding
+        def process_with_insurance_agent():
             global image_description
             try:
+                # Collect the full description
                 for chunk in stream_image_to_bedrock(temp_file_path, model_id):
-                    image_description += chunk  # Add to the global variable
+                    image_description += chunk
                     yield chunk
                 
-        
-                logger.info(f"Description preview: {image_description}...")
+                # Now that we have the full description, call the insurance agent
+                logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
+                insurance_result = insurance_agent(image_description)
+                logger.info(f"Insurance agent processing result: {insurance_result}")
+                
             finally:
                 # Clean up the temporary file
                 if os.path.exists(temp_file_path):
@@ -71,7 +75,7 @@ async def analyze_image(
         
         # Return a streaming response
         return StreamingResponse(
-            generate_with_cleanup(),
+            process_with_insurance_agent(),
             media_type="text/plain"
         )
     

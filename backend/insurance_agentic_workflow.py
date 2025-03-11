@@ -60,8 +60,8 @@ if __name__ == '__main__':
     graph = workflow.compile()
 
     # Print the graph in ASCII format
-    ascii_graph = graph.get_graph().draw_ascii()
-    print(ascii_graph)
+    #ascii_graph = graph.get_graph().draw_ascii()
+    #print(ascii_graph)
 
     initial_content = (
     "This is what the image of the accident looks like: "
