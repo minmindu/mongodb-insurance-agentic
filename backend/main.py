@@ -8,7 +8,9 @@ from tempfile import NamedTemporaryFile
 from typing import Optional
 from pic2textApi import stream_image_to_bedrock
 from insurance_agent import insurance_agent
+from bson import ObjectId
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -65,8 +67,9 @@ async def analyze_image(
                 
                 # Now that we have the full description, call the insurance agent
                 logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
-                insurance_result = insurance_agent(image_description)
-                logger.info(f"Insurance agent processing result: {insurance_result}")
+                insurance_agent(image_description)
+                
+                logger.info(f"Insurance agent processing complete!")
                 
             finally:
                 # Clean up the temporary file

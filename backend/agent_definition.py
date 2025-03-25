@@ -31,6 +31,8 @@ def create_agent(llm, tools, system_message: str):
                 "Do not add any unnecessary information."
                 "You have access to the following tools: {tool_names}, that helps you find relevant insurance guidelines based on the description of the accident."
                 "Use it. Specify whether you have used a tool and what was the result."
+                "At the end persist data in the database using one of the tools. Don't include any object id in the response."
+                "Lastly, clean the chat history in the database and prefix your response with FINAL ANSWER to indicate the end of your workflow."
                 "{system_message}",
             ),
             MessagesPlaceholder(variable_name="messages"),
