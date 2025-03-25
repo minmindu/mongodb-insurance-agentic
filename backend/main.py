@@ -65,9 +65,9 @@ async def analyze_image(
                     yield chunk
                 
                 # Now that we have the full description, call the insurance agent
-                logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
+                #logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
                 insurance_result = insurance_agent(image_description)
-                logger.info(f"Insurance agent processing result: {insurance_result}")
+                #logger.info(f"Insurance agent processing result: {insurance_result}")
                 
             finally:
                 # Clean up the temporary file
