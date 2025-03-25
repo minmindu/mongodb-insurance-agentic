@@ -97,7 +97,7 @@ const ImageDescriptor = () => {
       </div>
 
       <div className={styles.similarImageSection}>
-        <h2>Live Response</h2>
+        <h2>Live Description</h2>
         <div className={styles.similarDocsContainer}>
           {similarDocs.map((doc, index) => (
             <p key={index} className={styles.similarDoc}>

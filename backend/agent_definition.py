@@ -31,7 +31,12 @@ def create_agent(llm, tools, system_message: str):
                 "Do not add any unnecessary information."
                 "You have access to the following tools: {tool_names}, that helps you find relevant insurance guidelines based on the description of the accident."
                 "Use it. Specify whether you have used a tool and what was the result."
-                "At the end persist data in the database using one of the tools. Don't include any object id in the response."
+                "At the end persist data in the database using one of the tools."
+                "the document you persist must contain the following fields:"
+                "date: the current date and time"
+                "description: a summary of the accident"
+                "recommendation: the recommended course of action based on the retrieved guidelines and what happened in the accident"
+                "claim_handler: the name of the claim handler"
                 "Lastly, clean the chat history in the database and prefix your response with FINAL ANSWER to indicate the end of your workflow."
                 "{system_message}",
             ),
