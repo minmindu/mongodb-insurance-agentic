@@ -65,10 +65,6 @@ def persist_data(data):
     db = client[database_name]
     collection = db[collection_name]
 
-    for row in data:
-        if "_id" in row:
-            del row["_id"]
-
     collection.insert_one(data)
     return "Data persisted successfully."
 
