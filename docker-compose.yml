@@ -1,11 +1,21 @@
 services:
-  demoname-backend:
+  insurance-agentic-backend:
     build:
       context: .
       no_cache: true
       dockerfile: Dockerfile.backend
-    image: imagename-backend:latest
+    image: insurance-agentic-backend:latest
     ports:
       - "8000:8000"
     restart: always
-    container_name: demoname-backend
+    container_name: insurance-agentic-backend
+  insurance-agentic-frontend:
+    build:
+      context: .
+      no_cache: true
+      dockerfile: Dockerfile.frontend
+    image: insurance-agentic-frontend:latest
+    ports:
+      - "8000:8000"
+    restart: always
+    container_name: insurance-agentic-frontend

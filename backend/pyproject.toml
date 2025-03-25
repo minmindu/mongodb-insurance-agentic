@@ -22,9 +22,9 @@ langchain-aws = "^0.2.11"
 langchain-community = "^0.3.16"
 grandalf = "^0.8"
 langgraph-checkpoint-mongodb = "^0.1.0"
-langchain-openai = "^0.3.3"
-yfinance = "^0.2.53"
 langchain-mongodb = "^0.4.0"
+tqdm = "^4.67.1"
+python-multipart = "^0.0.20"
 
 
 [build-system]
