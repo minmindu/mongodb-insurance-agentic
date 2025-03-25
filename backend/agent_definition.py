@@ -29,15 +29,10 @@ def create_agent(llm, tools, system_message: str):
                 "and summarize relevant insurance guidelines so that the handler can determine the coverage and process the claim accordingly."
                 "Present your findings in a clear and extremely concise manner, and assign the claim to a handler (you can make up a name)."
                 "Do not add any unnecessary information."
-                "Prefix your response with FINAL ANSWER so the team knows to stop."
                 "You have access to the following tools: {tool_names}, that helps you find relevant insurance guidelines based on the description of the accident."
                 "Use it. Specify whether you have used a tool and what was the result."
-                "At the end persist data in the database using one of the tools."
-                "These are the things you need to store in the document in the following format:"
-                "{accident description: the description of the accident,"
-                "summary and next steps: description of the findings and recommended next actions,"
-                "claim handler: the name of the claim handler,"
-                "timestamp: current date and time.}"
+                "At the end persist data in the database using one of the tools. Don't include any object id in the response."
+                "Lastly, clean the chat history in the database and prefix your response with FINAL ANSWER to indicate the end of your workflow."
                 "{system_message}",
             ),
             MessagesPlaceholder(variable_name="messages"),

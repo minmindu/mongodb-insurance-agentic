@@ -4,12 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import APIRouter
 from dotenv import load_dotenv
 import os
-import uvicorn
 from tempfile import NamedTemporaryFile
 from typing import Optional
 from pic2textApi import stream_image_to_bedrock
 from insurance_agent import insurance_agent
+from bson import ObjectId
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -65,9 +66,10 @@ async def analyze_image(
                     yield chunk
                 
                 # Now that we have the full description, call the insurance agent
-                #logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
-                insurance_result = insurance_agent(image_description)
-                #logger.info(f"Insurance agent processing result: {insurance_result}")
+                logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
+                insurance_agent(image_description)
+                
+                logger.info(f"Insurance agent processing complete!")
                 
             finally:
                 # Clean up the temporary file
@@ -85,6 +87,3 @@ async def analyze_image(
         if os.path.exists(temp_file_path):
             os.unlink(temp_file_path)
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
-    
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
