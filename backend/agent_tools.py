@@ -37,22 +37,7 @@ def fetch_guidelines(query: str, n=1) -> str:
     return str(result[0][0].page_content)
     #return str(result)
 
-@tool
-def persist_data(data: dict) -> str:
-    """Persists the data in the database."""
-
-    """I want to persist timestamp, final answer and image description (summary?) in the database."""
-    cluster_uri = os.getenv("MONGODB_URI")
-    database_name = os.getenv("DATABASE_NAME")
-    collection_name = os.getenv("COLLECTION_NAME_2")
-
-    client = MongoClient(cluster_uri)
-    db = client[database_name]
-    collection = db[collection_name]
-    collection.insert_one(data)
-    return "Data persisted successfully."
-
-tools = [fetch_guidelines, persist_data]
+tools = [fetch_guidelines]
 
 if __name__ == "__main__":
     # Example usage
