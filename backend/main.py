@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import APIRouter
 from dotenv import load_dotenv
 import os
+import uvicorn
 from tempfile import NamedTemporaryFile
 from typing import Optional
 from pic2textApi import stream_image_to_bedrock
@@ -84,3 +85,6 @@ async def analyze_image(
         if os.path.exists(temp_file_path):
             os.unlink(temp_file_path)
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+    
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

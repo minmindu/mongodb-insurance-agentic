@@ -2,6 +2,7 @@ from langchain.agents import tool
 from embeddings.bedrock.getters import get_embedding_model
 from agent_vector_store import create_vector_store
 from pymongo import MongoClient
+from datetime import datetime
 
 import os
 import logging
@@ -42,6 +43,18 @@ def persist_data(data: dict) -> str:
     """Persists the data in the database."""
 
     """I want to persist timestamp, final answer and image description (summary?) in the database."""
+    # Ensure required fields are present
+    required_fields = ["accident_description", "timestamp", "final_answer"]
+    for field in required_fields:
+        if field not in data:
+            return f"Error: Missing required field '{field}'"
+
+    # Convert timestamp if necessary
+    if isinstance(data["timestamp"], str):
+        try:
+            data["timestamp"] = datetime.fromisoformat(data["timestamp"].replace("Z", "+00:00"))
+        except ValueError:
+            return "Error: Invalid timestamp format. Use ISO 8601 (e.g., '2021-07-27T22:00:00Z')"
     cluster_uri = os.getenv("MONGODB_URI")
     database_name = os.getenv("DATABASE_NAME")
     collection_name = os.getenv("COLLECTION_NAME_2")
@@ -56,7 +69,14 @@ tools = [fetch_guidelines, persist_data]
 
 if __name__ == "__main__":
     # Example usage
-    print("Calling fetch_guidelines...")
+    #print("Calling fetch_guidelines...")
 
-    query = "school bus accident with passenger vehicle"
-    print(fetch_guidelines(query))
+    #query = "school bus accident with passenger vehicle"
+    #print(fetch_guidelines(query))
+    data = {"accident_description": "school bus accident with passenger vehicle",
+             "timestamp": "2021-07-27T22:00:00Z",
+             "final_answer": "Policy 1"
+           }
+    
+    persist_data(data)
+    print("Done.")
