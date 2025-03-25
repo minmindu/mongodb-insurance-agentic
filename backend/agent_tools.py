@@ -35,26 +35,28 @@ vector_store = create_vector_store(
 def fetch_guidelines(query: str, n=1) -> str:
     """Runs semantic search on existing policies to find relevant ones based on the image description."""
     result = vector_store.similarity_search_with_score(query=query, k=n)
+    
     return str(result[0][0].page_content)
     #return str(result)
 
 @tool
-def persist_data(data: dict) -> str:
+def persist_data(data):
     """Persists the data in the database."""
 
-    """I want to persist timestamp, final answer and image description (summary?) in the database."""
     # Ensure required fields are present
-    required_fields = ["accident_description", "timestamp", "final_answer"]
-    for field in required_fields:
-        if field not in data:
-            return f"Error: Missing required field '{field}'"
+    # required_fields = ["accident_description", "timestamp", "final_answer"]
+    # for field in required_fields:
+    #     if field not in data:
+    #         return f"Error: Missing required field '{field}'"
 
-    # Convert timestamp if necessary
-    if isinstance(data["timestamp"], str):
-        try:
-            data["timestamp"] = datetime.fromisoformat(data["timestamp"].replace("Z", "+00:00"))
-        except ValueError:
-            return "Error: Invalid timestamp format. Use ISO 8601 (e.g., '2021-07-27T22:00:00Z')"
+    # # Convert timestamp if necessary
+    # if isinstance(data["timestamp"], str):
+    #     try:
+    #         data["timestamp"] = datetime.fromisoformat(data["timestamp"].replace("Z", "+00:00"))
+    #     except ValueError:
+    #         return "Error: Invalid timestamp format. Use ISO 8601 (e.g., '2021-07-27T22:00:00Z')"
+    
+
     cluster_uri = os.getenv("MONGODB_URI")
     database_name = os.getenv("DATABASE_NAME")
     collection_name = os.getenv("COLLECTION_NAME_2")
@@ -62,6 +64,11 @@ def persist_data(data: dict) -> str:
     client = MongoClient(cluster_uri)
     db = client[database_name]
     collection = db[collection_name]
+
+    for row in data:
+        if "_id" in row:
+            del row["_id"]
+
     collection.insert_one(data)
     return "Data persisted successfully."
 

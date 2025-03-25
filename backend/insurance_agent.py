@@ -10,6 +10,7 @@ from langgraph.prebuilt import tools_condition
 from agent_node_definition import chatbot_node, tool_node
 from agent_chat_history import temp_mem
 
+
 import pprint
 from typing import Dict, List
 
@@ -20,6 +21,7 @@ def insurance_agent(image_description: str):
     class AgentState(TypedDict):
         messages: Annotated[Sequence[BaseMessage], operator.add]
         sender: str
+
 
 
     # Agentic Workflow Definition
@@ -60,7 +62,7 @@ def insurance_agent(image_description: str):
     graph = workflow.compile()
 
     # Print the graph in ASCII format
-    #ascii_graph = graph.get_graph().draw_ascii()
+   # ascii_graph = graph.get_graph().draw_ascii()
     #print(ascii_graph)
 
     # Process and View Response
