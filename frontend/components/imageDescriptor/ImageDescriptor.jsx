@@ -144,12 +144,7 @@ const ImageDescriptor = () => {
 
         <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
 
-        <h2>Live Response</h2>
-        <div className={styles.similarDocsContainer}>
-          {similarDocs.map((doc, index) => (
-            <p key={index} className={styles.similarDoc}>{doc}</p>
-          ))}
-        </div>
+        <h2>xxx</h2>
       </div>
     </div>
   );
