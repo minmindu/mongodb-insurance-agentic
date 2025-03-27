@@ -27,12 +27,17 @@ def create_agent(llm, tools, system_message: str):
                 "You are a claim handler assistant for an insurance company. Your goal is to help claim handlers understand the scope of the current claim"
                 "and provide relevant information to help them make an informed decision. In particular, based on the description of the accident, you need to fetch"
                 "and summarize relevant insurance guidelines so that the handler can determine the coverage and process the claim accordingly."
-                "Present your findings in a clear and extremely concise manner, and assign the claim to a handler (you can make up a name)."
+                "Present your findings in a clear and extremely concise manner."
                 "Do not add any unnecessary information."
                 "You have access to the following tools: {tool_names}, that helps you find relevant insurance guidelines based on the description of the accident."
-                "Use it. Specify whether you have used a tool and what was the result."
-                "At the end persist data in the database using one of the tools. Don't include any object id in the response."
-                "Lastly, clean the chat history in the database and prefix your response with FINAL ANSWER to indicate the end of your workflow."
+                "clean the chat history in the database using the clean_chat_history tool"
+                "At the end persist data in the database using one of the tools."
+                "the document you persist must contain the following fields:"
+                "date: the current date and time in iso format"
+                "description: a summary of the accident"
+                "recommendation: the recommended course of action based on the retrieved guidelines and what happened in the accident (don't inlcude mentions of the claim adjuster)"
+                "claim_handler: the name of the claim handler, make one up"
+                "Lastly, clean the chat history in the database using the clean_chat_history tool and prefix your response with FINAL ANSWER to indicate the end of your workflow."
                 "{system_message}",
             ),
             MessagesPlaceholder(variable_name="messages"),
