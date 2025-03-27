@@ -112,6 +112,12 @@ const ImageDescriptor = () => {
 
           <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
 
+          <div className={styles.similarDocsContainer}>
+            {similarDocs.map((doc, index) => (
+              <p key={index} className={styles.similarDoc}>{doc}</p>
+            ))}
+          </div>
+
         </div>
 
       </div>
