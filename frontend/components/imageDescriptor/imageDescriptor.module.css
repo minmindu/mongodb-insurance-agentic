@@ -217,7 +217,7 @@
 .similarDocsContainer {
   display: block;  /* Switched to block for a fluid paragraph-like display */
   margin-top: 10px;
-  text-align: left;  /* Align text left if needed */
+  text-align: center;  /* Align text left if needed */
 }
 
 /* Remove the box styling by removing similarDoc class rules */
