@@ -3,15 +3,18 @@
   display: flex;
   width: 100%;
   height: 100%;
-  margin-top: 150px;
+  margin-top: 100px;
   overflow-y: auto;
 }
 
-.similarImageSection {
+.similarImageSection {  
   flex: 1;
   padding-left: 20px;
   margin-right: 50px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .imageDescriptorSection {
@@ -20,6 +23,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.subtitle{
+  color: #001E2B;
+  font-size: 14px;
+  margin-top: 20px;
 }
 
 .dragBox {
@@ -40,21 +49,10 @@
 }
 
 .uploadBtn {
-  border: 1px solid #c1c7c6;
-  border-radius: 50px;
-  background-color: white;
-  color: #00a35c;
-  padding: 5px 10px;
-  font-weight: 900;
-  font-size: 16px;
   margin-top: 20px;
-  box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.06);
+
 }
 
-.uploadBtn:hover {
-  background-color: #00a35c;
-  color: white;
-}
 
 .uploadedImgInfo {
   display: flex;
@@ -169,6 +167,43 @@
   height: 15px;
   animation: spin 1s linear infinite;
 }
+
+.link{
+  color: #006CFA;
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+.sampleImagesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+}
+
+.sampleImage {
+  width: 100px; /* Fixed size */
+  height: 100px; /* Keeps aspect ratio */
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, border 0.2s ease-in-out;
+  border: 2px solid transparent;
+}
+
+.sampleImage:hover {
+  transform: scale(1.05);
+}
+
+.selectedImage {
+  border: 2px solid #4caf50; /* Highlight selection */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  transform: none; /* Prevent size change */
+  width: 100px; /* Fixed size */
+  height: 100px; /* Keeps aspect ratio */
+}
+
 
 @keyframes spin {
   0% {
