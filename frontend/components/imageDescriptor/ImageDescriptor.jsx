@@ -54,52 +54,55 @@ const ImageDescriptor = () => {
       alert("Please select or drop an image first.");
       return;
     }
-
+  
     setLoading(true);
     setShowDescription(false);
-    setShowToast(false); // Hide previous toast if any
-
+    setShowToast(false);
+  
     const formData = new FormData();
-
+  
     if (droppedImage) {
       formData.append("file", droppedImage);
     } else {
-      formData.append("fileUrl", selectedImage); // Handle URLs separately
+      const response = await fetch(selectedImage);
+      const blob = await response.blob();
+      const file = new File([blob], "selectedImage.jpg", { type: blob.type });
+      formData.append("file", file);
     }
-
+  
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_IMAGE_DESCRIPTOR_API_URL, {
         method: "POST",
         body: formData,
       });
-
+  
       if (!response.body) throw new Error("ReadableStream not supported.");
-
+  
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
       let resultText = [];
-
+  
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         resultText.push(decoder.decode(value, { stream: true }));
       }
-
+  
       setSimilarDocs(resultText);
-      setShowDescription(true); // Show description after upload completes
-
-      // Show toast notification after 7 seconds
+      setShowDescription(true);
+  
       setTimeout(() => {
         setShowToast(true);
       }, 7000);
-
+  
     } catch (error) {
       console.error("Error while streaming response:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
