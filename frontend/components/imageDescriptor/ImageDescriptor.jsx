@@ -21,7 +21,7 @@ const ImageDescriptor = () => {
   const [showDescription, setShowDescription] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [claimDetails, setClaimDetails] = useState(null);
-  const [showSimilarImageSection, setShowSimilarImageSection] = useState(false); 
+  const [showSimilarImageSection, setShowSimilarImageSection] = useState(false);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -73,7 +73,7 @@ const ImageDescriptor = () => {
     setLoading(true);
     setShowDescription(false);
     setShowToast(false);
-    setShowSimilarImageSection(false); 
+    setShowSimilarImageSection(false);
 
     const formData = new FormData();
 
@@ -118,8 +118,8 @@ const ImageDescriptor = () => {
         setShowToast(true);
       }, 3000); // 3 seconds timeout
 
-       // Show the similar image section after the toast appears
-       setTimeout(() => {
+      // Show the similar image section after the toast appears
+      setTimeout(() => {
         setShowSimilarImageSection(true);
       }, 3000); // Show similarImageSection after 3 seconds
 
@@ -202,54 +202,56 @@ const ImageDescriptor = () => {
         </Button>
       </Modal>
 
-      <div className={styles.similarImageSection}>
-        <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
+      {showSimilarImageSection && (
 
-        <div className={styles.claimContainer}>
-          <div className={styles.claimHeader}>
-            <Icon className={styles.checkIcon} glyph="Checkmark" />
+        <div className={styles.similarImageSection}>
+          <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
 
-            <Body>Claim assigned to: <strong>Mark Scout</strong></Body>
-          </div>
+          <div className={styles.claimContainer}>
+            <div className={styles.claimHeader}>
+              <Icon className={styles.checkIcon} glyph="Checkmark" />
 
-          <div className={styles.claimDetails}>
-            <div className={styles.detailRow}>
-              <Body className={styles.detailTitle}>Date created</Body>
-              <Body>{new Date().toLocaleDateString()}</Body>
+              <Body>Claim assigned to: <strong>Mark Scout</strong></Body>
             </div>
-            <div className={styles.detailRow}>
-              <Body className={styles.detailTitle}>Submitted By</Body>
-              <Body>Luca Napoli</Body>
 
+            <div className={styles.claimDetails}>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Date created</Body>
+                <Body>{new Date().toLocaleDateString()}</Body>
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Submitted By</Body>
+                <Body>Luca Napoli</Body>
+
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Status</Body>
+                <Badge variant="yellow">IN PROGRESS</Badge>
+              </div>
             </div>
-            <div className={styles.detailRow}>
-              <Body className={styles.detailTitle}>Status</Body>
-              <Badge variant="yellow">IN PROGRESS</Badge>
+
+            <div className={styles.claimSummary}>
+              <Subtitle>Accident Summary</Subtitle>
+              <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
             </div>
-          </div>
 
-          <div className={styles.claimSummary}>
-            <Subtitle>Accident Summary</Subtitle>
-            <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
-          </div>
-
-          {/**
+            {/**
           <div className={styles.policySection}>
             <Subtitle>Relevant Policy</Subtitle>
             <div className={styles.policyBox}>Collision with school bus...</div>
           </div>
            */}
 
-          <div className={styles.recommendations}>
-            <Subtitle>Recommended next steps</Subtitle>
-            <ol>
-              <li><Body>Check coverage for medical expenses of any passengers, including those in the passenger vehicle.</Body></li>
-              <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
-            </ol>
+            <div className={styles.recommendations}>
+              <Subtitle>Recommended next steps</Subtitle>
+              <ol>
+                <li><Body>Check coverage for medical expenses of any passengers, including those in the passenger vehicle.</Body></li>
+                <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
+              </ol>
+            </div>
           </div>
         </div>
-      </div>
-
+      )}
     </div>
   );
 };
