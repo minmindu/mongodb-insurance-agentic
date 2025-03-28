@@ -21,6 +21,7 @@ const ImageDescriptor = () => {
   const [showDescription, setShowDescription] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [claimDetails, setClaimDetails] = useState(null);
+  const [showSimilarImageSection, setShowSimilarImageSection] = useState(false); 
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -72,6 +73,7 @@ const ImageDescriptor = () => {
     setLoading(true);
     setShowDescription(false);
     setShowToast(false);
+    setShowSimilarImageSection(false); 
 
     const formData = new FormData();
 
@@ -116,13 +118,17 @@ const ImageDescriptor = () => {
         setShowToast(true);
       }, 3000); // 3 seconds timeout
 
+       // Show the similar image section after the toast appears
+       setTimeout(() => {
+        setShowSimilarImageSection(true);
+      }, 3000); // Show similarImageSection after 3 seconds
+
     } catch (error) {
       console.error("Error while streaming response:", error);
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
@@ -173,7 +179,7 @@ const ImageDescriptor = () => {
             </div>
           </div>
         )}
-        
+
         {showToast && <ToastNotification />}
 
       </div>
