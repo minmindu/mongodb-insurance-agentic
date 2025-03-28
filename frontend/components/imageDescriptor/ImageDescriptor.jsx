@@ -100,20 +100,24 @@ const ImageDescriptor = () => {
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
-
+  
         const chunk = decoder.decode(value, { stream: true });
-        console.log("Received chunk:", chunk);
-
         resultText += chunk;
-
-        // Update similarDocs progressively for the typewriter effect
-        setSimilarDocs((prev) => [...prev, chunk]);
+  
+        // Simulate the typewriter effect by updating one character at a time
+        for (let i = 0; i < chunk.length; i++) {
+          setTimeout(() => {
+            setSimilarDocs((prev) => prev + chunk[i]); // Add each character one by one
+          }, i * 100); // Adjust typing speed with the delay (100ms per character)
+        }
       }
+  
+      // Optional: Add any logic that should be triggered once the streaming is complete
       setShowDescription(true);
       setTimeout(() => {
         setShowToast(true);
       }, 7000);
-
+  
     } catch (error) {
       console.error("Error while streaming response:", error);
     } finally {
