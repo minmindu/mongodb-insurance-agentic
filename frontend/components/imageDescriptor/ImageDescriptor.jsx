@@ -103,9 +103,7 @@ const ImageDescriptor = () => {
         resultText.push(decoder.decode(value, { stream: true }));
       }
 
-      // Implement the typewriter effect
-      typeWriterEffect(resultText.join(""));
-
+      setSimilarDocs(resultText);
       setShowDescription(true);
 
       setTimeout(() => {
@@ -117,19 +115,6 @@ const ImageDescriptor = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Typewriter effect function
-  const typeWriterEffect = (text) => {
-    let i = 0;
-    const speed = 50; // Delay in ms
-    const interval = setInterval(() => {
-      setSimilarDocs((prev) => prev + text[i]);
-      i++;
-      if (i >= text.length) {
-        clearInterval(interval);
-      }
-    }, speed);
   };
 
 
