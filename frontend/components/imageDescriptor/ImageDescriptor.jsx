@@ -40,7 +40,7 @@ const ImageDescriptor = () => {
       try {
         const response = await fetch("/api/fetchData");
         const data = await response.json();
-        setClaimDetails(data); 
+        setClaimDetails(data);
       } catch (error) {
         console.error("Error fetching claim details:", error);
       }
@@ -154,8 +154,12 @@ const ImageDescriptor = () => {
 
         {showDescription && (
           <div className={styles.imageDescription}>
-            <Icon className={styles.checkIcon} glyph="Sparkle" />
-            <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
+
+            <div className={styles.imageDescriptionTitle}>
+              <Icon className={styles.checkIcon} glyph="Sparkle" />
+              <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
+            </div>
+            
             <div className={styles.similarDocsContainer}>
               {similarDocs.map((doc, index) => (
                 <Body key={index} className={styles.similarDoc}>{doc}</Body>
