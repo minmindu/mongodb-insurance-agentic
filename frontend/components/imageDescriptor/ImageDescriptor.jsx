@@ -95,17 +95,21 @@ const ImageDescriptor = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
-      let resultText = [];
+      let resultText = "";
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
-        resultText.push(decoder.decode(value, { stream: true }));
+
+        const chunk = decoder.decode(value, { stream: true });
+        console.log("Received chunk:", chunk);
+
+        resultText += chunk;
+
+        // Update similarDocs progressively for the typewriter effect
+        setSimilarDocs((prev) => [...prev, chunk]);
       }
-
-      setSimilarDocs(resultText);
       setShowDescription(true);
-
       setTimeout(() => {
         setShowToast(true);
       }, 7000);
