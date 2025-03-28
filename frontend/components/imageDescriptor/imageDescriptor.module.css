@@ -197,6 +197,11 @@
   margin-right: 8px;
 }
 
+.sparkleIcon{
+  margin-right: 8px;
+  margin-top: 5px;
+}
+
 .imageDescriptionTitle {
   display: flex;
   align-items: center;

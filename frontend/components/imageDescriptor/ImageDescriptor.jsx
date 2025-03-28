@@ -103,7 +103,9 @@ const ImageDescriptor = () => {
         resultText.push(decoder.decode(value, { stream: true }));
       }
 
-      setSimilarDocs(resultText);
+      // Implement the typewriter effect
+      typeWriterEffect(resultText.join(""));
+
       setShowDescription(true);
 
       setTimeout(() => {
@@ -115,6 +117,19 @@ const ImageDescriptor = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Typewriter effect function
+  const typeWriterEffect = (text) => {
+    let i = 0;
+    const speed = 50; // Delay in ms
+    const interval = setInterval(() => {
+      setSimilarDocs((prev) => prev + text[i]);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+      }
+    }, speed);
   };
 
 
@@ -156,10 +171,10 @@ const ImageDescriptor = () => {
           <div className={styles.imageDescription}>
 
             <div className={styles.imageDescriptionTitle}>
-              <Icon className={styles.checkIcon} glyph="Sparkle" />
+              <Icon className={styles.sparkleIcon} glyph="Sparkle" />
               <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
             </div>
-            
+
             <div className={styles.similarDocsContainer}>
               {similarDocs.map((doc, index) => (
                 <Body key={index} className={styles.similarDoc}>{doc}</Body>
