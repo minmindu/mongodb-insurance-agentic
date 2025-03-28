@@ -20,6 +20,7 @@ const ImageDescriptor = () => {
   const [sampleImages, setSampleImages] = useState([]);
   const [showDescription, setShowDescription] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [claimDetails, setClaimDetails] = useState(null);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -32,6 +33,19 @@ const ImageDescriptor = () => {
       }
     };
     fetchSampleImages();
+  }, []);
+
+  useEffect(() => {
+    const fetchClaimDetails = async () => {
+      try {
+        const response = await fetch("/api/fetchData");
+        const data = await response.json();
+        setClaimDetails(data); 
+      } catch (error) {
+        console.error("Error fetching claim details:", error);
+      }
+    };
+    fetchClaimDetails();
   }, []);
 
   const handleDragOver = (e) => e.preventDefault();
@@ -54,13 +68,13 @@ const ImageDescriptor = () => {
       alert("Please select or drop an image first.");
       return;
     }
-  
+
     setLoading(true);
     setShowDescription(false);
     setShowToast(false);
-  
+
     const formData = new FormData();
-  
+
     if (droppedImage) {
       formData.append("file", droppedImage);
     } else {
@@ -69,40 +83,40 @@ const ImageDescriptor = () => {
       const file = new File([blob], "selectedImage.jpg", { type: blob.type });
       formData.append("file", file);
     }
-  
+
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_IMAGE_DESCRIPTOR_API_URL, {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.body) throw new Error("ReadableStream not supported.");
-  
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
       let resultText = [];
-  
+
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         resultText.push(decoder.decode(value, { stream: true }));
       }
-  
+
       setSimilarDocs(resultText);
       setShowDescription(true);
-  
+
       setTimeout(() => {
         setShowToast(true);
       }, 7000);
-  
+
     } catch (error) {
       console.error("Error while streaming response:", error);
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
@@ -184,7 +198,7 @@ const ImageDescriptor = () => {
           <div className={styles.claimDetails}>
             <div className={styles.detailRow}>
               <Body className={styles.detailTitle}>Date created</Body>
-              <Body>26/09/2023</Body>
+              <Body>{new Date().toLocaleDateString()}</Body>
             </div>
             <div className={styles.detailRow}>
               <Body className={styles.detailTitle}>Submitted By</Body>
@@ -198,14 +212,16 @@ const ImageDescriptor = () => {
           </div>
 
           <div className={styles.claimSummary}>
-            <Subtitle>Claim Summary</Subtitle>
-            <Body>...</Body>
+            <Subtitle>Accident Summary</Subtitle>
+            <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
           </div>
 
+          {/**
           <div className={styles.policySection}>
             <Subtitle>Relevant Policy</Subtitle>
             <div className={styles.policyBox}>Collision with school bus...</div>
           </div>
+           */}
 
           <div className={styles.recommendations}>
             <Subtitle>Recommended next steps</Subtitle>
