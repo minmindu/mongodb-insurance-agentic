@@ -5,8 +5,10 @@ import styles from "./imageDescriptor.module.css";
 import Button from "@leafygreen-ui/button";
 import Modal from "@leafygreen-ui/modal";
 import UserCard from "../userCard/UserCard";
-import { Subtitle } from "@leafygreen-ui/typography";
-
+import { Subtitle, Body } from "@leafygreen-ui/typography";
+import Icon from "@leafygreen-ui/icon";
+import Badge from "@leafygreen-ui/badge";
+import ToastNotification from "../toastNotification/ToastNotification";
 
 const ImageDescriptor = () => {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -16,6 +18,8 @@ const ImageDescriptor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [sampleImages, setSampleImages] = useState([]);
+  const [showDescription, setShowDescription] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -37,6 +41,8 @@ const ImageDescriptor = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setDroppedImage(file);
+      setSelectedImage(null);
+      setShowDescription(false);
       const reader = new FileReader();
       reader.onload = (event) => setImagePreview(event.target.result);
       reader.readAsDataURL(file);
@@ -44,28 +50,50 @@ const ImageDescriptor = () => {
   };
 
   const handleUpload = async () => {
-    if (!droppedImage) {
-      alert("Please drop an image first.");
+    if (!droppedImage && !selectedImage) {
+      alert("Please select or drop an image first.");
       return;
     }
 
     setLoading(true);
+    setShowDescription(false);
+    setShowToast(false); // Hide previous toast if any
+
     const formData = new FormData();
-    formData.append("file", droppedImage);
+
+    if (droppedImage) {
+      formData.append("file", droppedImage);
+    } else {
+      formData.append("fileUrl", selectedImage); // Handle URLs separately
+    }
+
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_IMAGE_DESCRIPTOR_API_URL, {
         method: "POST",
         body: formData,
       });
+
       if (!response.body) throw new Error("ReadableStream not supported.");
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
+      let resultText = [];
+
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
-        setSimilarDocs((prev) => [...prev, decoder.decode(value, { stream: true })]);
+        resultText.push(decoder.decode(value, { stream: true }));
       }
+
+      setSimilarDocs(resultText);
+      setShowDescription(true); // Show description after upload completes
+
+      // Show toast notification after 7 seconds
+      setTimeout(() => {
+        setShowToast(true);
+      }, 7000);
+
     } catch (error) {
       console.error("Error while streaming response:", error);
     } finally {
@@ -74,27 +102,24 @@ const ImageDescriptor = () => {
   };
 
   const handleImageSelect = (image) => setSelectedImage(image);
+
   const handleConfirmSelection = () => {
     if (selectedImage) {
       setImagePreview(selectedImage);
-      setDroppedImage(selectedImage);
+      setDroppedImage(null); // Clear the dropped image to prioritize the selected one
       setIsModalOpen(false);
+      setShowDescription(false);
     }
   };
 
   return (
     <div className={styles.content}>
       <div className={styles.imageDescriptorSection}>
-
         <UserCard name="Luca Napoli" role="Leafy Insurance Customer" image="/assets/eddie.png" />
 
         <h2>Image Search</h2>
 
-        <div
-          className={styles.dragBox}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
+        <div className={styles.dragBox} onDragOver={handleDragOver} onDrop={handleDrop}>
           {imagePreview ? (
             <img className={styles.droppedImage} src={imagePreview} alt="Selected" />
           ) : (
@@ -106,20 +131,23 @@ const ImageDescriptor = () => {
           {loading ? <div className={styles.spinner}></div> : "Upload and Generate Description"}
         </Button>
 
-        <p className={styles.link} onClick={() => setIsModalOpen(true)}>Choose from sample images</p>
+        <p className={styles.link} onClick={() => setIsModalOpen(true)}>
+          Choose from sample images
+        </p>
 
-        <div className={styles.imageDescription}>
-
-          <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
-
-          <div className={styles.similarDocsContainer}>
-            {similarDocs.map((doc, index) => (
-              <p key={index} className={styles.similarDoc}>{doc}</p>
-            ))}
+        {showDescription && (
+          <div className={styles.imageDescription}>
+            <Icon className={styles.checkIcon} glyph="Sparkle" />
+            <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
+            <div className={styles.similarDocsContainer}>
+              {similarDocs.map((doc, index) => (
+                <Body key={index} className={styles.similarDoc}>{doc}</Body>
+              ))}
+            </div>
           </div>
+        )}
 
-        </div>
-
+        <ToastNotification></ToastNotification>
       </div>
 
       <Modal open={isModalOpen} setOpen={setIsModalOpen}>
@@ -135,17 +163,57 @@ const ImageDescriptor = () => {
             />
           ))}
         </div>
-        <Button variant="primary" onClick={handleConfirmSelection} className={styles.confirmButtonContainer}>Confirm Selection</Button>
+        <Button variant="primary" onClick={handleConfirmSelection} className={styles.confirmButtonContainer}>
+          Confirm Selection
+        </Button>
       </Modal>
 
-
-
       <div className={styles.similarImageSection}>
-
         <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
 
-        <h2>xxx</h2>
+        <div className={styles.claimContainer}>
+          <div className={styles.claimHeader}>
+            <Icon className={styles.checkIcon} glyph="Checkmark" />
+
+            <Body>Claim assigned to: <strong>Mark Scout</strong></Body>
+          </div>
+
+          <div className={styles.claimDetails}>
+            <div className={styles.detailRow}>
+              <Body className={styles.detailTitle}>Date created</Body>
+              <Body>26/09/2023</Body>
+            </div>
+            <div className={styles.detailRow}>
+              <Body className={styles.detailTitle}>Submitted By</Body>
+              <Body>Luca Napoli</Body>
+
+            </div>
+            <div className={styles.detailRow}>
+              <Body className={styles.detailTitle}>Status</Body>
+              <Badge variant="yellow">IN PROGRESS</Badge>
+            </div>
+          </div>
+
+          <div className={styles.claimSummary}>
+            <Subtitle>Claim Summary</Subtitle>
+            <Body>...</Body>
+          </div>
+
+          <div className={styles.policySection}>
+            <Subtitle>Relevant Policy</Subtitle>
+            <div className={styles.policyBox}>Collision with school bus...</div>
+          </div>
+
+          <div className={styles.recommendations}>
+            <Subtitle>Recommended next steps</Subtitle>
+            <ol>
+              <li><Body>Check coverage for medical expenses of any passengers, including those in the passenger vehicle.</Body></li>
+              <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
+            </ol>
+          </div>
+        </div>
       </div>
+
     </div>
   );
 };
