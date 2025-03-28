@@ -146,7 +146,7 @@ const ImageDescriptor = () => {
       <div className={styles.imageDescriptorSection}>
         <UserCard name="Luca Napoli" role="Leafy Insurance Customer" image="/assets/eddie.png" />
 
-        <h2>Image Search</h2>
+        <h2>Upload your claim</h2>
 
         <div className={styles.dragBox} onDragOver={handleDragOver} onDrop={handleDrop}>
           {imagePreview ? (
