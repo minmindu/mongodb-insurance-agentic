@@ -13,7 +13,7 @@ import ToastNotification from "../toastNotification/ToastNotification";
 const ImageDescriptor = () => {
   const [droppedImage, setDroppedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [similarDocs, setSimilarDocs] = useState([]);
+  const [imageDescription, setImageDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -71,7 +71,8 @@ const ImageDescriptor = () => {
     }
 
     setLoading(true);
-    setShowDescription(false);
+    setImageDescription(""); // Clear previous description
+    setShowDescription(true); // Show description area immediately
     setShowToast(false);
     setShowSimilarImageSection(false);
 
@@ -97,31 +98,29 @@ const ImageDescriptor = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
-      let resultText = "";
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
 
-        const chunk = decoder.decode(value, { stream: true });
-        console.log("Received chunk:", chunk);
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          console.log("Received chunk:", chunk);
 
-        resultText += chunk;
-
-        // Update similarDocs progressively for the typewriter effect
-        setSimilarDocs((prev) => [...prev, chunk]);
+          // Update description directly for the streaming effect
+          setImageDescription(prev => prev + chunk);
+        }
       }
 
-      setShowDescription(true);
-
+      // Show toast notification after description is complete
       setTimeout(() => {
         setShowToast(true);
-      }, 3000); // 3 seconds timeout
+      }, 2000);
 
       // Show the similar image section after the toast appears
       setTimeout(() => {
         setShowSimilarImageSection(true);
-      }, 3000); // Show similarImageSection after 3 seconds
+      }, 3000);
 
     } catch (error) {
       console.error("Error while streaming response:", error);
@@ -138,6 +137,7 @@ const ImageDescriptor = () => {
       setDroppedImage(null); // Clear the dropped image to prioritize the selected one
       setIsModalOpen(false);
       setShowDescription(false);
+      setImageDescription(""); // Clear previous description
     }
   };
 
@@ -164,24 +164,23 @@ const ImageDescriptor = () => {
           Choose from sample images
         </p>
 
+        {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
-
             <div className={styles.imageDescriptionTitle}>
               <Icon className={styles.sparkleIcon} glyph="Sparkle" />
               <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
             </div>
 
             <div className={styles.similarDocsContainer}>
-              {similarDocs.map((doc, index) => (
-                <Body key={index} className={styles.similarDoc}>{doc}</Body>
-              ))}
+              <Body className={styles.similarDoc}>
+                {imageDescription || (loading ? "Generating description..." : "")}
+              </Body>
             </div>
           </div>
         )}
 
         {showToast && <ToastNotification />}
-
       </div>
 
       <Modal open={isModalOpen} setOpen={setIsModalOpen}>
@@ -203,14 +202,12 @@ const ImageDescriptor = () => {
       </Modal>
 
       {showSimilarImageSection && (
-
         <div className={styles.similarImageSection}>
           <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
 
           <div className={styles.claimContainer}>
             <div className={styles.claimHeader}>
               <Icon className={styles.checkIcon} glyph="Checkmark" />
-
               <Body>Claim assigned to: <strong>Mark Scout</strong></Body>
             </div>
 
@@ -222,7 +219,6 @@ const ImageDescriptor = () => {
               <div className={styles.detailRow}>
                 <Body className={styles.detailTitle}>Submitted By</Body>
                 <Body>Luca Napoli</Body>
-
               </div>
               <div className={styles.detailRow}>
                 <Body className={styles.detailTitle}>Status</Body>
@@ -234,13 +230,6 @@ const ImageDescriptor = () => {
               <Subtitle>Accident Summary</Subtitle>
               <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
             </div>
-
-            {/**
-          <div className={styles.policySection}>
-            <Subtitle>Relevant Policy</Subtitle>
-            <div className={styles.policyBox}>Collision with school bus...</div>
-          </div>
-           */}
 
             <div className={styles.recommendations}>
               <Subtitle>Recommended next steps</Subtitle>
