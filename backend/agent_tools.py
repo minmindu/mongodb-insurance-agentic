@@ -81,17 +81,3 @@ def clean_chat_history() -> dict:
     return {"message": "Chat history cleaned successfully."}
 
 tools = [fetch_guidelines, persist_data, clean_chat_history]
-
-if __name__ == "__main__":
-    # Example usage
-    #print("Calling fetch_guidelines...")
-
-    #query = "school bus accident with passenger vehicle"
-    #print(fetch_guidelines(query))
-    data = {"accident_description": "school bus accident with passenger vehicle",
-             "timestamp": "2021-07-27T22:00:00Z",
-             "final_answer": "Policy 1"
-           }
-    
-    persist_data(data)
-    print("Done.")
