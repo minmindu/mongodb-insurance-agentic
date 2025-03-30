@@ -36,6 +36,7 @@ def create_agent(llm, tools, system_message: str):
                 "date: the current date and time in iso format"
                 "description: a summary of the accident"
                 "recommendation: the recommended course of action based on the retrieved guidelines and what happened in the accident (don't inlcude mentions of the claim adjuster)"
+                "use bullet points for the recommendation"
                 "claim_handler: the name of the claim handler, make one up"
                 "Lastly, clean the chat history in the database using the clean_chat_history tool and prefix your response with FINAL ANSWER to indicate the end of your workflow."
                 "{system_message}",
