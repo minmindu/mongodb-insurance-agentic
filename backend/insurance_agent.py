@@ -106,7 +106,6 @@ def insurance_agent(image_description: str) -> List[BaseMessage]:
         else:
             print("temp_mem does not have a 'messages' attribute")
 
-    print(aparse_result(temp_mem.messages))
 
     #Do the parsing here before returning the messages
     return temp_mem.messages
