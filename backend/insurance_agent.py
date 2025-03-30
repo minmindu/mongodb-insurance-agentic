@@ -25,7 +25,7 @@ def serialize_object(obj):
         return str(obj)
     return obj
 
-def insurance_agent(image_description: str):
+def insurance_agent(image_description: str) -> List[BaseMessage]:
     # State Definition
     class AgentState(TypedDict):
         messages: Annotated[Sequence[BaseMessage], operator.add]
@@ -105,3 +105,7 @@ def insurance_agent(image_description: str):
                 print("---")
         else:
             print("temp_mem does not have a 'messages' attribute")
+
+
+    #Do the parsing here before returning the messages
+    return temp_mem.messages

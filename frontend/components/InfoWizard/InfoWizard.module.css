@@ -34,6 +34,10 @@
   border-radius: 8px;
 }
 
+.button{
+  margin-right: 50px;
+}
+
 @media (max-width: 768px) {
   .modal {
     width: 95vw;

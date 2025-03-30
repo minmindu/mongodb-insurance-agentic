@@ -3,6 +3,7 @@ from embeddings.bedrock.getters import get_embedding_model
 from agent_vector_store import create_vector_store
 from pymongo import MongoClient
 from datetime import datetime
+from bson import ObjectId
 
 import os
 import logging
@@ -39,9 +40,10 @@ def fetch_guidelines(query: str, n=1) -> str:
     print("Vector store - Similarity Search Partial: ", str(result[0][0].page_content))
     return str(result[0][0].page_content)
 
+
 @tool
 def persist_data(data) -> dict:
-    """Persists the data in the database."""
+    """Persists the data in the database and returns the ObjectId."""
     cluster_uri = os.getenv("MONGODB_URI")
     database_name = os.getenv("DATABASE_NAME")
     collection_name = os.getenv("COLLECTION_NAME_2")
@@ -51,9 +53,16 @@ def persist_data(data) -> dict:
     
     # Persist data
     collection = db[collection_name]
-    collection.insert_one(data)
-
-    return {"message": "Data persisted successfully."}
+    result = collection.insert_one(data)
+    
+    # Get the ObjectId of the inserted document
+    inserted_id = result.inserted_id
+    #object_id = result["object_id"]
+    #print(f"Inserted document with ID: {object_id}")
+    return {
+        "message": "Data persisted successfully.",
+        "object_id": str(inserted_id)  # Convert ObjectId to string for easier handling
+    }
 
 @tool
 def clean_chat_history() -> dict:
@@ -72,17 +81,3 @@ def clean_chat_history() -> dict:
     return {"message": "Chat history cleaned successfully."}
 
 tools = [fetch_guidelines, persist_data, clean_chat_history]
-
-if __name__ == "__main__":
-    # Example usage
-    #print("Calling fetch_guidelines...")
-
-    #query = "school bus accident with passenger vehicle"
-    #print(fetch_guidelines(query))
-    data = {"accident_description": "school bus accident with passenger vehicle",
-             "timestamp": "2021-07-27T22:00:00Z",
-             "final_answer": "Policy 1"
-           }
-    
-    persist_data(data)
-    print("Done.")

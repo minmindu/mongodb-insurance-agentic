@@ -23,7 +23,7 @@ const InfoWizard = ({
   return (
     <>
       {/* Bigger button for navbars */}
-      <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />}>
+      <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />} className={styles.button} >
         Tell me more!
       </Button>
 

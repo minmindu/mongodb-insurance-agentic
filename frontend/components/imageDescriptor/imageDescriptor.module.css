@@ -3,15 +3,18 @@
   display: flex;
   width: 100%;
   height: 100%;
-  margin-top: 150px;
+  margin-top: 100px;
   overflow-y: auto;
 }
 
-.similarImageSection {
+.similarImageSection {  
   flex: 1;
   padding-left: 20px;
   margin-right: 50px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .imageDescriptorSection {
@@ -20,6 +23,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.subtitle{
+  color: #001E2B;
+  font-size: 14px;
+  margin-top: 20px;
 }
 
 .dragBox {
@@ -40,21 +49,10 @@
 }
 
 .uploadBtn {
-  border: 1px solid #c1c7c6;
-  border-radius: 50px;
-  background-color: white;
-  color: #00a35c;
-  padding: 5px 10px;
-  font-weight: 900;
-  font-size: 16px;
   margin-top: 20px;
-  box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.06);
+
 }
 
-.uploadBtn:hover {
-  background-color: #00a35c;
-  color: white;
-}
 
 .uploadedImgInfo {
   display: flex;
@@ -80,25 +78,6 @@
 .fieldContent {
   font-size: 18px;
   margin-top: 5px;
-}
-
-.statusTag {
-  background-color: #cff8bf;
-  color: #025019;
-  padding: 2px 10px;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 18px;
-  width: fit-content;
-}
-
-.lossTbd {
-  background-color: #fff3a0;
-  color: #d68d00;
-  padding: 2px 10px;
-  border-radius: 50px;
-  font-weight: 700;
-  width: fit-content;
 }
 
 .topRow {
@@ -142,16 +121,6 @@
   font-size: 14px;
 }
 
-.lossAmount {
-  font-size: 14px;
-  color: #016bf8;
-  font-weight: 600;
-  background-color: #e1f7ff;
-  border-radius: 25px;
-  padding: 5px 15px;
-  width: fit-content;
-}
-
 .topRow {
   margin-bottom: 5px;
 }
@@ -170,6 +139,131 @@
   animation: spin 1s linear infinite;
 }
 
+.link{
+  color: #006CFA;
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+.sampleImagesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+}
+
+.sampleImage {
+  width: 100px; /* Fixed size */
+  height: 100px; /* Keeps aspect ratio */
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, border 0.2s ease-in-out;
+  border: 2px solid transparent;
+}
+
+.sampleImage:hover {
+  transform: scale(1.05);
+}
+
+.selectedImage {
+  border: 2px solid #4caf50; /* Highlight selection */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  transform: none; /* Prevent size change */
+  width: 100px; /* Fixed size */
+  height: 100px; /* Keeps aspect ratio */
+}
+
+.claimContainer {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 16px;
+}
+
+.claimHeader {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 12px;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.checkIcon {
+  margin-right: 8px;
+}
+
+.sparkleIcon{
+  margin-right: 2px;
+  padding-top: 20px;
+}
+
+.imageDescriptionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Adjust spacing as needed */
+  text-align: center;
+}
+
+.claimDetails {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detailRow {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  text-align: left;
+  margin: 10px 35px;
+}
+
+.detailTitle{
+  color: #9E9E9E;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.claimSummary{
+  text-align: left;
+  margin: 20px 35px;
+}
+
+.policySection {
+  margin: 20px 35px;
+  text-align: left;
+}
+
+.policyBox {
+  background: #f8f8f8;
+  padding: 8px;
+  border-radius: 9px;
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+}
+
+.recommendations {
+  margin: 20px 35px;
+  text-align: left;
+}
+
+.recommendations ol {
+  padding-left: 16px;
+}
+
+.recommendations li {
+  margin-bottom: 8px;
+}
+
+
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -182,7 +276,7 @@
 .similarDocsContainer {
   display: block;  /* Switched to block for a fluid paragraph-like display */
   margin-top: 10px;
-  text-align: left;  /* Align text left if needed */
+  text-align: center;  /* Align text left if needed */
 }
 
 /* Remove the box styling by removing similarDoc class rules */
@@ -194,3 +288,4 @@
   border-radius: 0; /* Remove border radius */
   font-size: 16px; /* Increase font-size for better readability */
 }
+
