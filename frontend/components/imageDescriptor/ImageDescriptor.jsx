@@ -108,19 +108,20 @@ const ImageDescriptor = () => {
           console.log("Received chunk:", chunk);
 
           // Update description directly for the streaming effect
-          setImageDescription(prev => prev + chunk);
+          setImageDescription((prev) => prev + chunk);
         }
       }
 
       // Show toast notification after description is complete
-      setTimeout(() => {
-        setShowToast(true);
-      }, 2000);
+      setShowToast(true);
 
-      // Show the similar image section after the toast appears
+      // After description is complete, call the agent
+      await runAgent();
+
+      // Optional: Show the similar image section after agent processing
       setTimeout(() => {
         setShowSimilarImageSection(true);
-      }, 3000);
+      }, 1000);
 
     } catch (error) {
       console.error("Error while streaming response:", error);
@@ -128,6 +129,28 @@ const ImageDescriptor = () => {
       setLoading(false);
     }
   };
+
+  const runAgent = async () => {
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_RUN_AGENT_API_URL, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("Agent result:", result);
+    } catch (error) {
+      console.error("Error calling agent:", error);
+    }
+  };
+  
+  
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
@@ -230,8 +253,6 @@ const ImageDescriptor = () => {
               <Subtitle>Accident Summary</Subtitle>
               <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
               <Body>This accident involved a collision between a school bus and a passenger car. The front end of the passenger car was severely damaged, indicating a forceful impact. The incident appears to have occurred on a residential street.</Body>
-              
-              
             </div>
 
             <div className={styles.recommendations}>
