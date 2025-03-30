@@ -229,6 +229,9 @@ const ImageDescriptor = () => {
             <div className={styles.claimSummary}>
               <Subtitle>Accident Summary</Subtitle>
               <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
+              <Body>This accident involved a collision between a school bus and a passenger car. The front end of the passenger car was severely damaged, indicating a forceful impact. The incident appears to have occurred on a residential street.</Body>
+              
+              
             </div>
 
             <div className={styles.recommendations}>
