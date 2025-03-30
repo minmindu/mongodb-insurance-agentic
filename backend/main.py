@@ -10,6 +10,8 @@ from pic2textApi import stream_image_to_bedrock
 from insurance_agent import insurance_agent
 from bson import ObjectId
 import logging
+import json
+from pymongo import MongoClient
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,11 +67,6 @@ async def analyze_image(
                     image_description += chunk
                     yield chunk
                 
-                # Now that we have the full description, call the insurance agent
-                #logger.info(f"Description complete, calling insurance agent with description preview: {image_description[:100]}...")
-                insurance_agent(image_description)                
-                #logger.info(f"Insurance agent processing complete!")
-                
             finally:
                 # Clean up the temporary file
                 if os.path.exists(temp_file_path):
@@ -86,3 +83,55 @@ async def analyze_image(
         if os.path.exists(temp_file_path):
             os.unlink(temp_file_path)
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+    
+@app.post("/runAgent")
+async def run_agent():
+    global image_description
+
+    if not image_description:
+        raise HTTPException(status_code=400, detail="Image description not yet available")
+
+    try:
+        # Call the insurance agent with the current image description
+        logger.info(f"Running agent with description: {image_description[:100]}...")
+        result = insurance_agent(image_description)
+        latest_object_id = None
+        # Iterate over each message in the results.
+        for message in result:
+            try:
+                # Parse the JSON content from the ToolMessage
+                content = json.loads(message.content)
+                # Check for an 'object_id' and store it as the latest found ID
+                if 'object_id' in content:
+                    latest_object_id = content['object_id']
+            except json.JSONDecodeError:
+                # Handle the case where JSON parsing might fail, though this shouldn't happen with well-formed content
+                
+                continue
+        # At the end of the loop, `latest_object_id` should contain the most recent `object_id`
+        if latest_object_id:
+            #logger.info("##################################################################################")
+            print(f"Latest object_id found: {latest_object_id}")
+        else:
+            print("No object_id found in tool messages.")
+
+    except Exception as e:
+        logger.error(f"Error during agent processing: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Agent processing error: {str(e)}")
+
+@app.get("/document/{object_id}")
+async def get_document(object_id: str):
+    cluster_uri = os.getenv("MONGODB_URI")
+    database_name = os.getenv("DATABASE_NAME")
+    collection_name = os.getenv("COLLECTION_NAME_2")
+
+    client = MongoClient(cluster_uri)
+    db = client[database_name]
+    collection = db[collection_name]
+
+    document = collection.find_one({"_id": ObjectId(object_id)})
+    if document:
+        document["_id"] = str(document["_id"])  # Convert ObjectId to string
+        return document
+    else:
+        raise HTTPException(status_code=404, detail="Document not found")
