@@ -110,7 +110,6 @@ async def run_agent():
                 continue
         # At the end of the loop, `latest_object_id` should contain the most recent `object_id`
         if latest_object_id:
-            logger.info("##################################################################################")
             print(f"Latest object_id found: {latest_object_id}")
         else:
             print("No object_id found in tool messages.")
