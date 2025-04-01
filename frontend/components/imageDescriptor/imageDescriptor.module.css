@@ -277,6 +277,8 @@
   display: block;  /* Switched to block for a fluid paragraph-like display */
   margin-top: 10px;
   text-align: center;  /* Align text left if needed */
+  margin-left: 20%; 
+  margin-right: 20%;
 }
 
 /* Remove the box styling by removing similarDoc class rules */
