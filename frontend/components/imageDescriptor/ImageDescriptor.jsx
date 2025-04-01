@@ -202,11 +202,6 @@ const ImageDescriptor = () => {
           Choose from sample images
         </p>
 
-        <div className={styles.claimStatusContainer}>
-          <Body className={styles.detailTitle}>Claim Status</Body>
-          <Badge variant="yellow">SENDING</Badge>
-
-        </div>
         {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
