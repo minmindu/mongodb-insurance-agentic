@@ -78,6 +78,7 @@ const ImageDescriptor = () => {
     setImageDescription(""); // Clear previous description
     setShowDescription(true); // Show description area immediately
     setShowToast(false);
+    setShowToastRight(false);
     setShowSimilarImageSection(false);
 
     const formData = new FormData();
@@ -121,12 +122,12 @@ const ImageDescriptor = () => {
       // Show toast notification after description is complete
       setTimeout(() => {
         setShowToast(true);
-      
+
         // Show ToastNotificationRight after 3s
         setTimeout(() => {
           setShowToastRight(true);
         }, 3000);
-      
+
       }, 4000);
 
       // After description is complete, call the agent
@@ -201,13 +202,20 @@ const ImageDescriptor = () => {
           Choose from sample images
         </p>
 
+        <div className={styles.claimStatusContainer}>
+          <Body className={styles.detailTitle}>Claim Status</Body>
+          <Badge variant="yellow">SENDING</Badge>
+
+        </div>
         {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
 
-            <Body className={styles.detailTitle}>Claim Status</Body>
-            {uploadStatus === "sending" && <Badge variant="yellow">SENDING</Badge>}
-            {uploadStatus === "uploaded" && <Badge variant="blue">UPLOADED FOR REVIEW</Badge>}
+            <div className={styles.claimStatusContainer}>
+              <Body className={styles.detailTitle}>Claim Status</Body>
+              {uploadStatus === "sending" && <Badge variant="yellow">SENDING</Badge>}
+              {uploadStatus === "uploaded" && <Badge variant="blue">UPLOADED FOR REVIEW</Badge>}
+            </div>
 
             <div className={styles.imageDescriptionTitle}>
               <Icon className={styles.sparkleIcon} glyph="Sparkle" />
@@ -222,9 +230,9 @@ const ImageDescriptor = () => {
           </div>
         )}
 
-        {showToast &&  <ToastNotification text="Your claim is under review and will be assigned shortly"/>}
+        {showToast && <ToastNotification text="Your claim is under review and will be assigned shortly" />}
 
-        <ToastNotificationRight text="Incoming claim being processed by agent"/>
+        {showToastRight && <ToastNotificationRight text="Incoming claim being processed by agent" />}
 
       </div>
 
