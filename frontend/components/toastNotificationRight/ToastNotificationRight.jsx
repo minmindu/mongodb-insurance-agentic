@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import styles from "./toastNotification.module.css";
+import styles from "./toastNotificationRight.module.css";
 import Icon from "@leafygreen-ui/icon";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
 
-const ToastNotification = ({ text }) => {
+const ToastNotificationRight = ({ text }) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -18,10 +18,10 @@ const ToastNotification = ({ text }) => {
 
   return (
     <div className={styles.toast}>
-        <Icon className={styles.sparkleIcon} glyph="Checkmark" />
+        <Icon className={styles.sparkleIcon} glyph="Clock" />
         <Body className={styles.subtitle}> {text}</Body>
     </div>
   );
 };
 
-export default ToastNotification;
+export default ToastNotificationRight;

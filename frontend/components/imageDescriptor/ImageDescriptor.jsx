@@ -9,6 +9,7 @@ import { Subtitle, Body } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
 import Badge from "@leafygreen-ui/badge";
 import ToastNotification from "../toastNotification/ToastNotification";
+import ToastNotificationRight from "../toastNotificationRight/ToastNotificationRight";
 
 const ImageDescriptor = () => {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -22,6 +23,8 @@ const ImageDescriptor = () => {
   const [showToast, setShowToast] = useState(false);
   const [claimDetails, setClaimDetails] = useState(null);
   const [showSimilarImageSection, setShowSimilarImageSection] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("idle"); // "idle" | "sending" | "uploaded"
+  const [showToastRight, setShowToastRight] = useState(false);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -71,6 +74,7 @@ const ImageDescriptor = () => {
     }
 
     setLoading(true);
+    setUploadStatus("sending"); // Show "SENDING" badge
     setImageDescription(""); // Clear previous description
     setShowDescription(true); // Show description area immediately
     setShowToast(false);
@@ -112,8 +116,18 @@ const ImageDescriptor = () => {
         }
       }
 
+      setUploadStatus("uploaded"); // Switch to "UPLOADED FOR REVIEW" badge
+
       // Show toast notification after description is complete
-      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(true);
+      
+        // Show ToastNotificationRight after 3s
+        setTimeout(() => {
+          setShowToastRight(true);
+        }, 3000);
+      
+      }, 4000);
 
       // After description is complete, call the agent
       await runAgent();
@@ -138,19 +152,19 @@ const ImageDescriptor = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
-      
+
       const result = await response.json();
       console.log("Agent result:", result);
     } catch (error) {
       console.error("Error calling agent:", error);
     }
   };
-  
-  
+
+
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
@@ -190,6 +204,11 @@ const ImageDescriptor = () => {
         {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
+
+            <Body className={styles.detailTitle}>Claim Status</Body>
+            {uploadStatus === "sending" && <Badge variant="yellow">SENDING</Badge>}
+            {uploadStatus === "uploaded" && <Badge variant="blue">UPLOADED FOR REVIEW</Badge>}
+
             <div className={styles.imageDescriptionTitle}>
               <Icon className={styles.sparkleIcon} glyph="Sparkle" />
               <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
@@ -203,7 +222,10 @@ const ImageDescriptor = () => {
           </div>
         )}
 
-        {showToast && <ToastNotification />}
+        {showToast &&  <ToastNotification text="Your claim is under review and will be assigned shortly"/>}
+
+        <ToastNotificationRight text="Incoming claim being processed by agent"/>
+
       </div>
 
       <Modal open={isModalOpen} setOpen={setIsModalOpen}>
