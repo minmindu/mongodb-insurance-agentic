@@ -119,13 +119,16 @@ const ImageDescriptor = () => {
 
       setUploadStatus("uploaded"); // Switch to "UPLOADED FOR REVIEW" badge
 
-      // Show toast notification after description is complete
+      // Show toast notification first
       setTimeout(() => {
         setShowToast(true);
 
-        // Show ToastNotificationRight after 3s
+        // After 3s, show ToastNotificationRight
         setTimeout(() => {
           setShowToastRight(true);
+
+          // Immediately after, show similar image section
+          setShowSimilarImageSection(true);
         }, 3000);
 
       }, 4000);
@@ -227,8 +230,6 @@ const ImageDescriptor = () => {
 
         {showToast && <ToastNotification text="Your claim is under review and will be assigned shortly" />}
 
-        {showToastRight && <ToastNotificationRight text="Incoming claim being processed by agent" />}
-
       </div>
 
       <Modal open={isModalOpen} setOpen={setIsModalOpen}>
@@ -248,6 +249,8 @@ const ImageDescriptor = () => {
           Confirm Selection
         </Button>
       </Modal>
+
+      {showToastRight && <ToastNotificationRight text="Incoming claim being processed by agent" />}
 
       {showSimilarImageSection && (
         <div className={styles.similarImageSection}>
