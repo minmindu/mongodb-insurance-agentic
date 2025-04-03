@@ -94,32 +94,13 @@ async def run_agent():
     try:
         # Call the insurance agent with the current image description
         logger.info(f"Running agent with description: {image_description[:100]}...")
-        result = insurance_agent(image_description)
-        latest_object_id = None
-        # Iterate over each message in the results.
-        for message in result:
-            try:
-                # Parse the JSON content from the ToolMessage
-                content = json.loads(message.content)
-                # Check for an 'object_id' and store it as the latest found ID
-                if 'object_id' in content:
-                    latest_object_id = content['object_id']
-            except json.JSONDecodeError:
-                # Handle the case where JSON parsing might fail, though this shouldn't happen with well-formed content
-                
-                continue
-        # At the end of the loop, `latest_object_id` should contain the most recent `object_id`
-        if latest_object_id:
-            print(f"Latest object_id found: {latest_object_id}")
-        else:
-            print("No object_id found in tool messages.")
+        object_id = insurance_agent(image_description)
+        logger.info(f"ObjectId: {object_id}")       
 
     except Exception as e:
         logger.error(f"Error during agent processing: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Agent processing error: {str(e)}")
-
-@app.get("/document/{object_id}")
-async def get_document(object_id: str):
+    
     cluster_uri = os.getenv("MONGODB_URI")
     database_name = os.getenv("DATABASE_NAME")
     collection_name = os.getenv("COLLECTION_NAME_2")
@@ -129,8 +110,11 @@ async def get_document(object_id: str):
     collection = db[collection_name]
 
     document = collection.find_one({"_id": ObjectId(object_id)})
+
     if document:
         document["_id"] = str(document["_id"])  # Convert ObjectId to string
         return document
     else:
         raise HTTPException(status_code=404, detail="Document not found")
+
+   
