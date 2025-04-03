@@ -250,8 +250,9 @@ const ImageDescriptor = () => {
         </Button>
       </Modal>
 
+      {/**
       {showToastRight && <ToastNotificationRight text="Incoming claim being processed by agent" />}
-
+ */}
       {showSimilarImageSection && (
         <div className={styles.similarImageSection}>
           <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
