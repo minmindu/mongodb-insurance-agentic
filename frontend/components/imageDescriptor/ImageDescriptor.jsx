@@ -39,6 +39,7 @@ const ImageDescriptor = () => {
     fetchSampleImages();
   }, []);
 
+  {/* 
   useEffect(() => {
     const fetchClaimDetails = async () => {
       try {
@@ -51,6 +52,8 @@ const ImageDescriptor = () => {
     };
     fetchClaimDetails();
   }, []);
+
+  */}
 
   const handleDragOver = (e) => e.preventDefault();
 
@@ -163,6 +166,13 @@ const ImageDescriptor = () => {
 
       const result = await response.json();
       console.log("Agent result:", result);
+
+      // Update claim details with new information
+      setClaimDetails({
+        description: result.description || "No summary available",
+        coverageDetail: result.coverageDetail || [],
+      });
+
     } catch (error) {
       console.error("Error calling agent:", error);
     }
@@ -280,10 +290,10 @@ const ImageDescriptor = () => {
 
             <div className={styles.claimSummary}>
               <Subtitle>Accident Summary</Subtitle>
-              <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
-              <Body>This accident involved a collision between a school bus and a passenger car. The front end of the passenger car was severely damaged, indicating a forceful impact. The incident appears to have occurred on a residential street.</Body>
+              <Body>{claimDetails ? claimDetails.description : "..."}</Body>
             </div>
 
+            {/**
             <div className={styles.recommendations}>
               <Subtitle>Recommended next steps</Subtitle>
               <ol>
@@ -291,6 +301,23 @@ const ImageDescriptor = () => {
                 <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
               </ol>
             </div>
+             */}
+
+            <div className={styles.recommendations}>
+              <Subtitle>Recommended next steps</Subtitle>
+              <ol>
+                {claimDetails?.coverageDetail?.length > 0 ? (
+                  claimDetails.coverageDetail.map((step, index) => (
+                    <li key={index}>
+                      <Body>{step}</Body>
+                    </li>
+                  ))
+                ) : (
+                  <Body>No recommendations available.</Body>
+                )}
+              </ol>
+            </div>
+
           </div>
         </div>
       )}
