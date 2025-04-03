@@ -170,7 +170,7 @@ const ImageDescriptor = () => {
       // Update claim details with new information
       setClaimDetails({
         description: result.description || "No summary available",
-        coverageDetail: result.coverageDetail || [],
+        recommendation: result.recommendation || [],
       });
 
     } catch (error) {
@@ -306,8 +306,8 @@ const ImageDescriptor = () => {
             <div className={styles.recommendations}>
               <Subtitle>Recommended next steps</Subtitle>
               <ol>
-                {claimDetails?.coverageDetail?.length > 0 ? (
-                  claimDetails.coverageDetail.map((step, index) => (
+                {claimDetails?.recommendation?.length > 0 ? (
+                  claimDetails.recommendation.map((step, index) => (
                     <li key={index}>
                       <Body>{step}</Body>
                     </li>
