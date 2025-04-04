@@ -230,6 +230,14 @@
   margin-bottom: 5px;
 }
 
+.claimStatusContainer {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center them horizontally */
+  justify-content: center; /* Center vertically within the section */
+  gap: 4px; /* Adjust spacing between text and badge */
+}
+
 .claimSummary{
   text-align: left;
   margin: 20px 35px;
@@ -262,8 +270,6 @@
   margin-bottom: 8px;
 }
 
-
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -279,15 +285,17 @@
   text-align: center;  /* Align text left if needed */
   margin-left: 20%; 
   margin-right: 20%;
+
 }
 
 /* Remove the box styling by removing similarDoc class rules */
 .similarDoc {
   display: inline;  /* Ensure text flows inline like a normal text paragraph */
-  margin-right: 2px; /* Optional: Add slight space between words */
+  margin-right: 10px; /* Optional: Add slight space between words */
   background-color: transparent; /* Remove background */
   padding: 0; /* Remove padding */
   border-radius: 0; /* Remove border radius */
   font-size: 16px; /* Increase font-size for better readability */
+
 }
 

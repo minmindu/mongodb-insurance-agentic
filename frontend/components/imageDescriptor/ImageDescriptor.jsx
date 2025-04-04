@@ -9,6 +9,7 @@ import { Subtitle, Body } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
 import Badge from "@leafygreen-ui/badge";
 import ToastNotification from "../toastNotification/ToastNotification";
+import ToastNotificationRight from "../toastNotificationRight/ToastNotificationRight";
 
 const ImageDescriptor = () => {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -22,6 +23,8 @@ const ImageDescriptor = () => {
   const [showToast, setShowToast] = useState(false);
   const [claimDetails, setClaimDetails] = useState(null);
   const [showSimilarImageSection, setShowSimilarImageSection] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("idle"); // "idle" | "sending" | "uploaded"
+  //const [showToastRight, setShowToastRight] = useState(false);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -34,19 +37,6 @@ const ImageDescriptor = () => {
       }
     };
     fetchSampleImages();
-  }, []);
-
-  useEffect(() => {
-    const fetchClaimDetails = async () => {
-      try {
-        const response = await fetch("/api/fetchData");
-        const data = await response.json();
-        setClaimDetails(data);
-      } catch (error) {
-        console.error("Error fetching claim details:", error);
-      }
-    };
-    fetchClaimDetails();
   }, []);
 
   const handleDragOver = (e) => e.preventDefault();
@@ -71,9 +61,11 @@ const ImageDescriptor = () => {
     }
 
     setLoading(true);
+    setUploadStatus("sending"); // Show "SENDING" badge
     setImageDescription(""); // Clear previous description
     setShowDescription(true); // Show description area immediately
     setShowToast(false);
+   // setShowToastRight(false);
     setShowSimilarImageSection(false);
 
     const formData = new FormData();
@@ -112,16 +104,15 @@ const ImageDescriptor = () => {
         }
       }
 
-      // Show toast notification after description is complete
-      setShowToast(true);
+      setUploadStatus("uploaded"); // Switch to "UPLOADED FOR REVIEW" badge
+
+      // Show toast notification first
+      setTimeout(() => {
+        setShowToast(true);
+      }, 4000);
 
       // After description is complete, call the agent
       await runAgent();
-
-      // Optional: Show the similar image section after agent processing
-      setTimeout(() => {
-        setShowSimilarImageSection(true);
-      }, 1000);
 
     } catch (error) {
       console.error("Error while streaming response:", error);
@@ -129,6 +120,12 @@ const ImageDescriptor = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (claimDetails) {
+      setShowSimilarImageSection(true);
+    }
+  }, [claimDetails]);
 
   const runAgent = async () => {
     try {
@@ -138,19 +135,25 @@ const ImageDescriptor = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
-      
+
       const result = await response.json();
       console.log("Agent result:", result);
+
+      setClaimDetails({
+        description: result.description || "No summary available",
+        recommendation: result.recommendation || [],
+      });
+
     } catch (error) {
       console.error("Error calling agent:", error);
     }
   };
-  
-  
+
+
 
   const handleImageSelect = (image) => setSelectedImage(image);
 
@@ -187,9 +190,15 @@ const ImageDescriptor = () => {
           Choose from sample images
         </p>
 
-        {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
+
+            <div className={styles.claimStatusContainer}>
+              <Body className={styles.detailTitle}>Claim Status</Body>
+              {uploadStatus === "sending" && <Badge variant="yellow">SENDING</Badge>}
+              {uploadStatus === "uploaded" && <Badge variant="blue">UPLOADED FOR REVIEW</Badge>}
+            </div>
+
             <div className={styles.imageDescriptionTitle}>
               <Icon className={styles.sparkleIcon} glyph="Sparkle" />
               <Subtitle className={styles.subtitle}>AI generated image description</Subtitle>
@@ -203,7 +212,8 @@ const ImageDescriptor = () => {
           </div>
         )}
 
-        {showToast && <ToastNotification />}
+        {showToast && <ToastNotification text="Your claim is under review and will be assigned shortly" />}
+
       </div>
 
       <Modal open={isModalOpen} setOpen={setIsModalOpen}>
@@ -224,6 +234,9 @@ const ImageDescriptor = () => {
         </Button>
       </Modal>
 
+      {/**
+      {showToastRight && <ToastNotificationRight text="Incoming claim being processed by agent" />}
+ */}
       {showSimilarImageSection && (
         <div className={styles.similarImageSection}>
           <UserCard name="Mark Scout" role="Claim Adjuster" image="/assets/rob.png" />
@@ -251,17 +264,24 @@ const ImageDescriptor = () => {
 
             <div className={styles.claimSummary}>
               <Subtitle>Accident Summary</Subtitle>
-              <Body>{claimDetails ? claimDetails.summary : "..."}</Body>
-              <Body>This accident involved a collision between a school bus and a passenger car. The front end of the passenger car was severely damaged, indicating a forceful impact. The incident appears to have occurred on a residential street.</Body>
+              <Body>{claimDetails ? claimDetails.description : "..."}</Body>
             </div>
 
             <div className={styles.recommendations}>
               <Subtitle>Recommended next steps</Subtitle>
               <ol>
-                <li><Body>Check coverage for medical expenses of any passengers, including those in the passenger vehicle.</Body></li>
-                <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
+                {claimDetails?.recommendation?.length > 0 ? (
+                  claimDetails.recommendation.map((step, index) => (
+                    <li key={index}>
+                      <Body>{step}</Body>
+                    </li>
+                  ))
+                ) : (
+                  <Body>No recommendations available.</Body>
+                )}
               </ol>
             </div>
+
           </div>
         </div>
       )}

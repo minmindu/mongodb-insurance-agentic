@@ -2,13 +2,13 @@ import operator
 from collections.abc import Sequence
 from typing import Annotated, TypedDict
 from bson import ObjectId
+import json
 
 from langchain_core.messages import BaseMessage, AIMessage
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import tools_condition
 
 from agent_node_definition import chatbot_node, tool_node
-from agent_chat_history import temp_mem
 
 import pprint
 from typing import Dict, List
@@ -65,8 +65,8 @@ def insurance_agent(image_description: str) -> List[BaseMessage]:
 
     # Graph Compilation and visualization
     graph = workflow.compile()
-
     # Process and View Response
+    object_ids = []  # Collect ObjectIds here
     events = graph.stream(
         {
             "messages": [
@@ -78,6 +78,8 @@ def insurance_agent(image_description: str) -> List[BaseMessage]:
         {"recursion_limit": 15},
     )
 
+    new_messages = []  # Initialize new_messages to collect processed messages
+
     for event in events:
         try:
             # Serialize the event to handle ObjectId
@@ -87,25 +89,26 @@ def insurance_agent(image_description: str) -> List[BaseMessage]:
             pprint.pprint(serialized_event)
             print("---")
 
-            new_messages = process_event(serialized_event)
-            if new_messages:
-                temp_mem.add_messages(new_messages)
+            # Process the event and extract messages
+            processed_messages = process_event(serialized_event)
+            new_messages.extend(processed_messages)
+
+            # Extract ObjectId from ToolMessage content if present
+            if "tools" in serialized_event and "messages" in serialized_event["tools"]:
+                for tool_message in serialized_event["tools"]["messages"]:
+                    if isinstance(tool_message, ToolMessage):
+                        try:
+                            # Parse the content as JSON to extract the ObjectId
+                            tool_content = json.loads(tool_message.content)
+                            if "object_id" in tool_content:
+                                object_ids.append(tool_content["object_id"])
+                        except json.JSONDecodeError:
+                            print("Failed to parse ToolMessage content as JSON.")
+
         except TypeError as e:
             # Log a warning and continue
             print(f"Serialization warning: {e}. Skipping problematic event.")
 
-        print("\nFinal state of temp_mem:")
-        if hasattr(temp_mem, "messages"):
-            for msg in temp_mem.messages:
-                print(f"Type: {msg.__class__.__name__}")
-                print(f"Content: {msg.content}")
-                if msg.additional_kwargs:
-                    print("Additional kwargs:")
-                    pprint.pprint(msg.additional_kwargs)
-                print("---")
-        else:
-            print("temp_mem does not have a 'messages' attribute")
-
-
-    #Do the parsing here before returning the messages
-    return temp_mem.messages
+    print("ObjectId:")
+    print(str(object_ids[0]))
+    return str(object_ids[0])
