@@ -24,7 +24,7 @@ const ImageDescriptor = () => {
   const [claimDetails, setClaimDetails] = useState(null);
   const [showSimilarImageSection, setShowSimilarImageSection] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("idle"); // "idle" | "sending" | "uploaded"
-  const [showToastRight, setShowToastRight] = useState(false);
+  //const [showToastRight, setShowToastRight] = useState(false);
 
   useEffect(() => {
     const fetchSampleImages = async () => {
@@ -38,22 +38,6 @@ const ImageDescriptor = () => {
     };
     fetchSampleImages();
   }, []);
-
-  {/* 
-  useEffect(() => {
-    const fetchClaimDetails = async () => {
-      try {
-        const response = await fetch("/api/fetchData");
-        const data = await response.json();
-        setClaimDetails(data);
-      } catch (error) {
-        console.error("Error fetching claim details:", error);
-      }
-    };
-    fetchClaimDetails();
-  }, []);
-
-  */}
 
   const handleDragOver = (e) => e.preventDefault();
 
@@ -81,7 +65,7 @@ const ImageDescriptor = () => {
     setImageDescription(""); // Clear previous description
     setShowDescription(true); // Show description area immediately
     setShowToast(false);
-    setShowToastRight(false);
+   // setShowToastRight(false);
     setShowSimilarImageSection(false);
 
     const formData = new FormData();
@@ -125,24 +109,10 @@ const ImageDescriptor = () => {
       // Show toast notification first
       setTimeout(() => {
         setShowToast(true);
-
-        // After 3s, show ToastNotificationRight
-        setTimeout(() => {
-          setShowToastRight(true);
-
-          // Immediately after, show similar image section
-          setShowSimilarImageSection(true);
-        }, 3000);
-
       }, 4000);
 
       // After description is complete, call the agent
       await runAgent();
-
-      // Optional: Show the similar image section after agent processing
-      setTimeout(() => {
-        setShowSimilarImageSection(true);
-      }, 1000);
 
     } catch (error) {
       console.error("Error while streaming response:", error);
@@ -150,6 +120,12 @@ const ImageDescriptor = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (claimDetails) {
+      setShowSimilarImageSection(true);
+    }
+  }, [claimDetails]);
 
   const runAgent = async () => {
     try {
@@ -167,7 +143,6 @@ const ImageDescriptor = () => {
       const result = await response.json();
       console.log("Agent result:", result);
 
-      // Update claim details with new information
       setClaimDetails({
         description: result.description || "No summary available",
         recommendation: result.recommendation || [],
@@ -215,7 +190,6 @@ const ImageDescriptor = () => {
           Choose from sample images
         </p>
 
-        {/* Image description section - now appears immediately after upload starts */}
         {showDescription && (
           <div className={styles.imageDescription}>
 
@@ -292,16 +266,6 @@ const ImageDescriptor = () => {
               <Subtitle>Accident Summary</Subtitle>
               <Body>{claimDetails ? claimDetails.description : "..."}</Body>
             </div>
-
-            {/**
-            <div className={styles.recommendations}>
-              <Subtitle>Recommended next steps</Subtitle>
-              <ol>
-                <li><Body>Check coverage for medical expenses of any passengers, including those in the passenger vehicle.</Body></li>
-                <li><Body>Property damage coverage for the school bus and the other vehicle involved.</Body></li>
-              </ol>
-            </div>
-             */}
 
             <div className={styles.recommendations}>
               <Subtitle>Recommended next steps</Subtitle>
