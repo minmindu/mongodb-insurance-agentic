@@ -57,8 +57,7 @@ def persist_data(data) -> dict:
     
     # Get the ObjectId of the inserted document
     inserted_id = result.inserted_id
-    #object_id = result["object_id"]
-    #print(f"Inserted document with ID: {object_id}")
+    
     return {
         "message": "Data persisted successfully.",
         "object_id": str(inserted_id)  # Convert ObjectId to string for easier handling
