@@ -25,14 +25,18 @@ const Navbar = () => {
             content: [
               {
                 heading: "Agentic AI in Insurance",
-                body: "...",
+                body: "Efficient claim processing is critical for insurers, with timely resolution and information transparency being key to maintaining positive customer relationships and satisfaction. AI is helping insurers make sense of vast amounts of data faster and in real-time, from unstructured content like police reports and dashboard camera footage to written descriptions and vehicle telemetry. Through capabilities like natural language processing, image classification, and vector embedding, AI enables insurers to tame the flood of claim-related data, generate accurate catastrophe impact assessments, expedite claim routing with richer metadata, avoid litigation through better analysis, and prevent losses altogether through predictive risk assessment.",
               },
               {
                 heading: "How to Demo",
                 body: [
                   "Drag and drop an image into the box or select one from the sample images.",
                   "Press 'Upload and Generate Description'.",
-                  "..."
+                  "The LLM will generate a description of the image.",
+                  "The description kicks off the agentic workflow.",
+                  "The agent will then use the description to find relevant guidelines.",
+                  "The agent will then use the guidelines to generate a recommendation and assign a work order to a claim adjuster.",
+                  "The agent will then persist the recommendation and work order to MongoDB.",
                 ],
               },
             ],
@@ -41,16 +45,13 @@ const Navbar = () => {
             heading: "Behind the Scenes",
             content: [
               {
-                heading: "Data Flow",
-                body: "This section explains how data moves through the system, from ingestion to query execution.",
+                heading: "Workflow",
                 images: [
                   {
-                    src: "assets/ingest.png",
-                    alt: "Ingest Architecture",
+                    src: "assets/flow.png"
                   },
                   {
-                    src: "assets/query.png",
-                    alt: "Query Architecture",
+                    
                   },
                 ],
               },
@@ -65,8 +66,13 @@ const Navbar = () => {
 
               },
               {
-                heading: "Performance",
-                body: "MongoDB's Vector Search is extremely fast at retrieving vectors.",
+                heading: "Tools as documents",
+                body: "You can store tool definitions, prompts, workflows, and even past runs in MongoDB as JSON documents. That makes it easier to version, audit, and evolve your agent capabilities over time.",
+
+              },
+              {
+                heading: "Flexible Schema for Evolving Agent Workflows",
+                body: "Agents often work with semi-structured or rapidly evolving data (e.g., user prompts, metadata, tool outputs, embeddings). MongoDB’s document model lets you easily store and update that kind of dynamic data without rigid schemas getting in the way.",
 
               },
             ],
