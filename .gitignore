@@ -1,3 +1,11 @@
+# task-def.json
+**/task-def.json
+
+# __pycache__ and .pyc files
+**__pycache__
+**/__pycache__/
+*.pyc
+
 # Environments
 .env
 .venv
