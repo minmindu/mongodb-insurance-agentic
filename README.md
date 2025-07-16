@@ -8,6 +8,21 @@ This project is an intelligent **AI-powered Insurance Claims Assistant** that st
 
 ---
 
+## High-Level Architecture
+
+![Insurance Claim Agent Architecture](architecture/Claim_Agent_Architecture.png)  
+
+The application follows a comprehensive agentic workflow that bridges structured and unstructured data:
+
+1. **Customer Input:** Customers upload damage photos through a web interface  
+2. **AI Image Analysis:** Advanced AI models analyze and describe accident damage in real-time  
+3. **Intelligent Agent Processing:** [LangGraph](https://langchain-ai.github.io/langgraph/)-powered agent processes the description through multiple decision points  
+4. **Vector-Based Policy Retrieval:** Agent uses semantic search to find relevant insurance guidelines  
+5. **Automated Claim Processing:** Agent creates comprehensive claim summaries with structured recommendations  
+6. **Handler Assignment:** System assigns claims to appropriate handlers with complete documentation
+
+---
+
 ## Where MongoDB Shines
 
 This project leverages [**MongoDB Atlas Vector Search**](https://www.mongodb.com/products/platform/atlas/vector-search) to efficiently handle the complete insurance workflow, providing fast and relevant retrieval of information. [MongoDB Atlas](https://www.mongodb.com/atlas/database) offers robust and scalable database solutions, making it ideal for handling large volumes of data and complex queries.
@@ -49,19 +64,6 @@ This project leverages [**MongoDB Atlas Vector Search**](https://www.mongodb.com
 - **Persistent State Management:** Store claim data, chat history, and agent states in MongoDB with full audit trails  
 - **Vector-Powered Policy Retrieval:** Semantic search through insurance guidelines using [Cohere embeddings](https://docs.cohere.com/docs/embeddings) with cosine similarity  
 - **Flexible Data Storage:** MongoDB's document structure handles dynamic claim data and evolving workflows
-
----
-
-## High-Level Architecture
-
-The application follows a comprehensive agentic workflow that bridges structured and unstructured data:
-
-1. **Customer Input:** Customers upload damage photos through a web interface  
-2. **AI Image Analysis:** Advanced AI models analyze and describe accident damage in real-time  
-3. **Intelligent Agent Processing:** [LangGraph](https://langchain-ai.github.io/langgraph/)-powered agent processes the description through multiple decision points  
-4. **Vector-Based Policy Retrieval:** Agent uses semantic search to find relevant insurance guidelines  
-5. **Automated Claim Processing:** Agent creates comprehensive claim summaries with structured recommendations  
-6. **Handler Assignment:** System assigns claims to appropriate handlers with complete documentation
 
 ---
 
