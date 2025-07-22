@@ -38,23 +38,8 @@ This project leverages [**MongoDB Atlas Vector Search**](https://www.mongodb.com
 - **Flexible Schema Evolution**  
   Perfect for evolving agentic workflows where claim structures, agent tools, and processing steps continuously adapt to new regulations, products, and customer needs without database migrations.
 
-- **Agent State Persistence**  
-  [LangGraph](https://langchain-ai.github.io/langgraph/) checkpoints and conversation history stored as documents enable complete audit trails and workflow resumption, ensuring compliance and seamless customer experiences across multiple touchpoints.  
-  > **Note:** While this is entirely feasible with MongoDB, for the sake of simplicity it is not fully enabled in the current demo implementation.
-
 - **Flexibility—Multi-modal Data Storage**  
   MongoDB provides unmatched flexibility in supporting multi-modal data. It efficiently stores and indexes diverse data types, including structured claim records, document-like policies, unstructured accident images, vector embeddings, and even time-series sensor data. This enables seamless workflows where all your data—optimized for AI/ML processing and real-time analytics—resides in a single, unified platform.
-
----
-
-## Security & Compliance
-
-- [Field-level encryption](https://www.mongodb.com/docs/manual/core/security-client-side-encryption/) for sensitive customer data  
-- [Role-based access control (RBAC)](https://www.mongodb.com/docs/manual/core/authorization/) for agent permissions  
-- [Comprehensive auditing](https://www.mongodb.com/docs/manual/core/auditing/) for regulatory compliance  
-- [Data residency controls](https://www.mongodb.com/atlas/data-residency) for international operations  
-
-> **Note:** Features such as field-level encryption, advanced RBAC, and detailed auditing are all fully supported by MongoDB. However, for simplicity and demo purposes, not all these security practices are implemented in this example.
 
 ---
 
@@ -155,7 +140,7 @@ This project leverages [**MongoDB Atlas Vector Search**](https://www.mongodb.com
 Clone the repository:
 
 ```sh
-git clone <your-repo-url>
+git clone <repo-url>
 cd insurance-claim-agent
 ```
 
@@ -233,7 +218,7 @@ make clean
 Clone the repository:
 
 ```sh
-git clone <your-repo-url>
+git clone <repo-url>
 cd insurance-claim-agent/backend
 ```
 
