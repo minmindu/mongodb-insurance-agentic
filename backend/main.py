@@ -113,6 +113,109 @@ async def run_agent():
 
     if document:
         document["_id"] = str(document["_id"])  # Convert ObjectId to string
+        
+        # Debug logging to see what's in the document
+        logger.info(f"Document retrieved: {document}")
+        logger.info(f"Recommendation field: {document.get('recommendation', 'NOT FOUND')}")
+        logger.info(f"Recommendation type: {type(document.get('recommendation'))}")
+        
+        # Keep the original nested structure for the enhanced frontend UI
+        if 'recommendation' in document:
+            rec = document['recommendation']
+            if isinstance(rec, dict):
+                # Keep the nested object structure for the new enhanced UI
+                logger.info(f"Keeping nested recommendation structure: {rec}")
+                # Ensure all expected fields exist with defaults
+                if 'immediate_actions' not in rec:
+                    rec['immediate_actions'] = []
+                if 'short_term_actions' not in rec:
+                    rec['short_term_actions'] = []
+                if 'approval_guidance' not in rec:
+                    rec['approval_guidance'] = {}
+                if 'reserve_recommendations' not in rec:
+                    rec['reserve_recommendations'] = {}
+                
+                document['recommendation'] = rec
+                
+            elif isinstance(rec, str):
+                # If it's a string, try to parse it as JSON first
+                try:
+                    import json
+                    parsed_rec = json.loads(rec)
+                    if isinstance(parsed_rec, dict):
+                        # Keep as nested object for enhanced UI
+                        document['recommendation'] = parsed_rec
+                    elif isinstance(parsed_rec, list):
+                        # Convert array to basic structure
+                        document['recommendation'] = {
+                            'immediate_actions': parsed_rec,
+                            'short_term_actions': [],
+                            'approval_guidance': {},
+                            'reserve_recommendations': {}
+                        }
+                    else:
+                        # Fallback to basic structure
+                        document['recommendation'] = {
+                            'immediate_actions': [rec],
+                            'short_term_actions': [],
+                            'approval_guidance': {},
+                            'reserve_recommendations': {}
+                        }
+                except:
+                    # If JSON parsing fails, create basic structure
+                    actions = []
+                    if '\n' in rec:
+                        actions = [line.strip() for line in rec.split('\n') if line.strip()]
+                    elif '•' in rec:
+                        actions = [line.strip() for line in rec.split('•') if line.strip()]
+                    elif '-' in rec:
+                        actions = [line.strip() for line in rec.split('-') if line.strip()]
+                    else:
+                        actions = [rec]
+                    
+                    document['recommendation'] = {
+                        'immediate_actions': actions,
+                        'short_term_actions': [],
+                        'approval_guidance': {},
+                        'reserve_recommendations': {}
+                    }
+            elif isinstance(rec, list):
+                # Convert array to nested structure for enhanced UI
+                document['recommendation'] = {
+                    'immediate_actions': rec,
+                    'short_term_actions': [],
+                    'approval_guidance': {},
+                    'reserve_recommendations': {}
+                }
+            else:
+                # Fallback to basic structure
+                document['recommendation'] = {
+                    'immediate_actions': [str(rec)] if rec else [],
+                    'short_term_actions': [],
+                    'approval_guidance': {},
+                    'reserve_recommendations': {}
+                }
+        else:
+            document['recommendation'] = {
+                'immediate_actions': ["No specific recommendations generated"],
+                'short_term_actions': [],
+                'approval_guidance': {},
+                'reserve_recommendations': {}
+            }
+        
+        # Ensure priority is always a string for frontend compatibility
+        if 'priority' in document:
+            if isinstance(document['priority'], (int, float)):
+                priority_map = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"}
+                document['priority'] = priority_map.get(document['priority'], "Standard")
+            elif not isinstance(document['priority'], str):
+                document['priority'] = str(document['priority'])
+        else:
+            document['priority'] = "Standard"
+        
+        logger.info(f"Final recommendation array: {document['recommendation']}")
+        logger.info(f"Final priority: {document['priority']}")
+        
         return document
     else:
         raise HTTPException(status_code=404, detail="Document not found")

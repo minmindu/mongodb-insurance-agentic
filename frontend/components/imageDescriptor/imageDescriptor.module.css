@@ -296,6 +296,154 @@
   padding: 0; /* Remove padding */
   border-radius: 0; /* Remove border radius */
   font-size: 16px; /* Increase font-size for better readability */
+}
 
+/* Enhanced Recommendations Styles */
+.actionSection {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f8fafe;
+  border-left: 4px solid #2563eb;
+}
+
+.actionHeader {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1e40af;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.actionList {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.immediateAction {
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-left: 3px solid #dc2626;
+  padding-left: 10px;
+  background-color: #fef2f2;
+}
+
+.shortTermAction {
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-left: 3px solid #f59e0b;
+  padding-left: 10px;
+  background-color: #fffbeb;
+}
+
+.guidanceSection {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+  border-left: 4px solid #16a34a;
+}
+
+.guidanceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.guidanceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #d1fae5;
+}
+
+.guidanceLabel {
+  font-weight: 600;
+  color: #065f46;
+  font-size: 13px;
+}
+
+.guidanceValue {
+  font-weight: 700;
+  color: #047857;
+  font-size: 14px;
+}
+
+.reserveSection {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fefce8;
+  border-left: 4px solid #eab308;
+}
+
+.reserveGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.reserveItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #fef3c7;
+}
+
+.reserveLabel {
+  font-weight: 600;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.reserveValue {
+  font-weight: 700;
+  color: #d97706;
+  font-size: 14px;
+}
+
+.decisionSection {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #faf5ff;
+  border-left: 4px solid #9333ea;
+}
+
+.decisionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.decisionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e9d5ff;
+}
+
+.decisionLabel {
+  font-weight: 600;
+  color: #6b21a8;
+  font-size: 13px;
+}
+
+.decisionValue {
+  font-weight: 700;
+  color: #7c3aed;
+  font-size: 14px;
 }
 

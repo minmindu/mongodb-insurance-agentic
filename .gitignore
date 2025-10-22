@@ -6,6 +6,9 @@
 **/__pycache__/
 *.pyc
 
+.DS_Store
+data/sample_policy/
+
 # Environments
 .env
 .venv

@@ -40,6 +40,14 @@ Before you begin, ensure you have met the following requirements:
 3. Open the Terminal within Visual Studio Code.
 4. Ensure you are in the root project directory where the `makefile` is located.
 5. Execute the following commands:
+    If there is an error in instaling `poetry`, then do the below:
+    ```
+    python3 -m pip install --user pipx
+    python3 -m pipx ensurepath
+    python3 -m pip install --upgrade pip
+    pipx install poetry
+    ```
+
   - Poetry start
     ````bash
     make poetry_start
@@ -48,11 +56,21 @@ Before you begin, ensure you have met the following requirements:
     ````bash
     make poetry_install
     ````
+or, do the below (has to add `--no-root` option!)
+```
+   cd backend
+   poetry install --no-interaction -v --no-cache --no-root
+
+   ## then need to run backend in port 8000
+   ps -ef | grep uvicorn 
+   poetry run uvicorn main:app 
+--reload --host 0.0.0.0 --port 8000
+```
 6. Verify that the `.venv` folder has been generated within the `/backend` directory.
 
 ### Frontend
 
-1. Navigate to the `src` folder.
+1. Navigate to the `frontend` folder.
 2. Install dependencies by running:
 ```bash
 npm install

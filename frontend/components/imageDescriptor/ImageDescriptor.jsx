@@ -141,11 +141,35 @@ const ImageDescriptor = () => {
       }
 
       const result = await response.json();
-      console.log("Agent result:", result);
+      console.log("Agent result recommendation:", result.recommendation);
+
+      // The backend now sends the proper nested structure
+      const processedRecommendations = result.recommendation || {
+        immediate_actions: [],
+        short_term_actions: [],
+        approval_guidance: {},
+        reserve_recommendations: {}
+      };
+
+      // Process priority - convert number to string
+      let priorityString = "Standard";
+      if (result.priority) {
+        if (typeof result.priority === 'number') {
+          const priorityMap = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"};
+          priorityString = priorityMap[result.priority] || "Standard";
+        } else {
+          priorityString = String(result.priority);
+        }
+      }
 
       setClaimDetails({
         description: result.description || "No summary available",
-        recommendation: result.recommendation || [],
+        recommendation: processedRecommendations,
+        approvalLevel: result.approval_level || "Unknown",
+        estimatedReserves: result.estimated_reserves || "TBD",
+        priority: priorityString,
+        timeline: result.timeline || "Standard processing",
+        claimHandler: result.claim_handler || "Not assigned"
       });
 
     } catch (error) {
@@ -253,6 +277,32 @@ const ImageDescriptor = () => {
                 <Body>{new Date().toLocaleDateString()}</Body>
               </div>
               <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Claim Handler</Body>
+                <Body>{claimDetails ? claimDetails.claimHandler : "Not assigned"}</Body>
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Priority Level</Body>
+                <Badge variant={
+                  claimDetails?.priority?.toLowerCase() === "critical" || claimDetails?.priority?.toLowerCase() === "high" ? "red" : 
+                  claimDetails?.priority?.toLowerCase() === "medium" ? "yellow" : 
+                  "blue"
+                }>
+                  {claimDetails?.priority ? String(claimDetails.priority).toUpperCase() : "STANDARD"}
+                </Badge>
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Approval Required</Body>
+                <Body>{claimDetails ? claimDetails.approvalLevel : "TBD"}</Body>
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Estimated Reserves</Body>
+                <Body>{claimDetails ? claimDetails.estimatedReserves : "TBD"}</Body>
+              </div>
+              <div className={styles.detailRow}>
+                <Body className={styles.detailTitle}>Expected Timeline</Body>
+                <Body>{claimDetails ? claimDetails.timeline : "Standard processing"}</Body>
+              </div>
+              <div className={styles.detailRow}>
                 <Body className={styles.detailTitle}>Submitted By</Body>
                 <Body>Luca Napoli</Body>
               </div>
@@ -268,18 +318,129 @@ const ImageDescriptor = () => {
             </div>
 
             <div className={styles.recommendations}>
-              <Subtitle>Recommended next steps</Subtitle>
-              <ol>
-                {claimDetails?.recommendation?.length > 0 ? (
-                  claimDetails.recommendation.map((step, index) => (
-                    <li key={index}>
-                      <Body>{step}</Body>
-                    </li>
-                  ))
-                ) : (
-                  <Body>No recommendations available.</Body>
-                )}
-              </ol>
+              <Subtitle>Claim Processing Recommendations</Subtitle>
+              
+              {/* Immediate Actions Section */}
+              {claimDetails?.recommendation?.immediate_actions?.length > 0 && (
+                <div className={styles.actionSection}>
+                  <Body className={styles.actionHeader}>🚨 IMMEDIATE ACTIONS (Next 4 Hours)</Body>
+                  <ol className={styles.actionList}>
+                    {claimDetails.recommendation.immediate_actions.map((action, index) => (
+                      <li key={index} className={styles.immediateAction}>
+                        <Body>{action}</Body>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Short-term Actions Section */}
+              {claimDetails?.recommendation?.short_term_actions?.length > 0 && (
+                <div className={styles.actionSection}>
+                  <Body className={styles.actionHeader}>📋 SHORT-TERM ACTIONS (24-72 Hours)</Body>
+                  <ol className={styles.actionList}>
+                    {claimDetails.recommendation.short_term_actions.map((action, index) => (
+                      <li key={index} className={styles.shortTermAction}>
+                        <Body>{action}</Body>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Approval Guidance Section */}
+              {claimDetails?.recommendation?.approval_guidance && 
+               Object.keys(claimDetails.recommendation.approval_guidance).length > 0 && 
+               (claimDetails.recommendation.approval_guidance.initial_reserve_threshold || 
+                claimDetails.recommendation.approval_guidance.supplement_estimate_threshold) && (
+                <div className={styles.guidanceSection}>
+                  <Body className={styles.actionHeader}>✅ APPROVAL GUIDANCE</Body>
+                  <div className={styles.guidanceGrid}>
+                    {claimDetails.recommendation.approval_guidance.initial_reserve_threshold && (
+                      <div className={styles.guidanceItem}>
+                        <Body className={styles.guidanceLabel}>Initial Reserve Threshold:</Body>
+                        <Body className={styles.guidanceValue}>${claimDetails.recommendation.approval_guidance.initial_reserve_threshold.toLocaleString()}</Body>
+                      </div>
+                    )}
+                    {claimDetails.recommendation.approval_guidance.supplement_estimate_threshold && (
+                      <div className={styles.guidanceItem}>
+                        <Body className={styles.guidanceLabel}>Supplement Threshold:</Body>
+                        <Body className={styles.guidanceValue}>${claimDetails.recommendation.approval_guidance.supplement_estimate_threshold.toLocaleString()}</Body>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Reserve Recommendations Section */}
+              {claimDetails?.recommendation?.reserve_recommendations && 
+               Object.keys(claimDetails.recommendation.reserve_recommendations).length > 0 && 
+               (claimDetails.recommendation.reserve_recommendations.initial_reserve || 
+                claimDetails.recommendation.reserve_recommendations.maximum_reserve) && (
+                <div className={styles.reserveSection}>
+                  <Body className={styles.actionHeader}>💰 RESERVE RECOMMENDATIONS</Body>
+                  <div className={styles.reserveGrid}>
+                    {claimDetails.recommendation.reserve_recommendations.initial_reserve && (
+                      <div className={styles.reserveItem}>
+                        <Body className={styles.reserveLabel}>Initial Reserve:</Body>
+                        <Body className={styles.reserveValue}>${claimDetails.recommendation.reserve_recommendations.initial_reserve.toLocaleString()}</Body>
+                      </div>
+                    )}
+                    {claimDetails.recommendation.reserve_recommendations.maximum_reserve && (
+                      <div className={styles.reserveItem}>
+                        <Body className={styles.reserveLabel}>Maximum Reserve:</Body>
+                        <Body className={styles.reserveValue}>${claimDetails.recommendation.reserve_recommendations.maximum_reserve.toLocaleString()}</Body>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}              {/* Decision Tree Section */}
+              {claimDetails?.recommendation?.decision_tree && (
+                <div className={styles.decisionSection}>
+                  <Body className={styles.actionHeader}>🎯 DECISION MATRIX</Body>
+                  <div className={styles.decisionGrid}>
+                    {claimDetails.recommendation.decision_tree.priority && (
+                      <div className={styles.decisionItem}>
+                        <Body className={styles.decisionLabel}>Claim Priority:</Body>
+                        <Badge variant={claimDetails.recommendation.decision_tree.priority >= 3 ? "red" : claimDetails.recommendation.decision_tree.priority === 2 ? "yellow" : "blue"}>
+                          LEVEL {claimDetails.recommendation.decision_tree.priority}
+                        </Badge>
+                      </div>
+                    )}
+                    {claimDetails.recommendation.decision_tree.timeline && (
+                      <div className={styles.decisionItem}>
+                        <Body className={styles.decisionLabel}>Expected Timeline:</Body>
+                        <Body className={styles.decisionValue}>{claimDetails.recommendation.decision_tree.timeline}</Body>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Fallback for processed recommendations array */}
+              {(!claimDetails?.recommendation?.immediate_actions && 
+                !claimDetails?.recommendation?.short_term_actions && 
+                claimDetails?.recommendation?.length > 0) && (
+                <div className={styles.actionSection}>
+                  <Body className={styles.actionHeader}>📋 RECOMMENDATIONS</Body>
+                  <ol className={styles.actionList}>
+                    {claimDetails.recommendation.map((step, index) => (
+                      <li key={index}>
+                        <Body>{step}</Body>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* No recommendations fallback */}
+              {(!claimDetails?.recommendation || 
+                (Array.isArray(claimDetails.recommendation) && claimDetails.recommendation.length === 0) ||
+                (typeof claimDetails.recommendation === 'object' && 
+                 !claimDetails.recommendation.immediate_actions && 
+                 !claimDetails.recommendation.short_term_actions)) && (
+                <Body>No specific recommendations available.</Body>
+              )}
             </div>
 
           </div>

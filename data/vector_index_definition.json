@@ -1,0 +1,14 @@
+{
+  "name": "description_index",
+  "type": "vectorSearch",
+  "definition": {
+    "fields": [
+      {
+        "type": "vector",
+        "path": "descriptionEmbedding",
+        "numDimensions": 1024,
+        "similarity": "cosine"
+      }
+    ]
+  }
+}
